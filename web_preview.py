@@ -53,7 +53,11 @@ def asset(name):
         return jsonify(error="Not found"), 404
     return send_file(ROOT / "assets" / name, mimetype="image/png")
 
-@app.post("/run")
+# Scientific processing remains opt-in until validation on representative control points.
+if os.environ.get("WEB_ENABLE_POINTS", "0") == "1":
+    from web_points import points_api
+    app.register_blueprint(points_api)
+
 @app.post("/dem")
 @app.post("/inspect")
 def disabled():
@@ -63,3 +67,7 @@ def disabled():
 @app.errorhandler(RequestEntityTooLarge)
 def oversize(_):
     return jsonify(error="Request too large for the preview."), 413
+
+@app.post("/run")
+def disabled_run():
+    return jsonify(error="Scientific processing is not enabled for public use yet."), 503
