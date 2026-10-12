@@ -10,7 +10,7 @@
 
 *Geodetic height-reference concept. Illustration bundled with the toolkit; see [third-party material notices](NOTICE.md).*
 
-**Release verification:** [Scientific smoke test](release_smoke_test.py) · [Release readiness and publication plan](RELEASE_READINESS.md). The local software is the reference implementation; the online service is a limited preview. Public release awaits independent validation and third-party redistribution checks.
+**Validation and reproducibility:** [Scientific smoke test](release_smoke_test.py) · [Validation and publication notes](RELEASE_READINESS.md). The local installation is the reference implementation; the hosted website is a limited demonstration.
 
 ## What can this toolkit do?
 
@@ -29,11 +29,11 @@ The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a 
 
 **[Open the hosted website (web preview)](https://geodetic-elevation-toolkit-preview.onrender.com)**
 
-The hosted preview currently provides the interface and browser-based **GPS Time conversion**. **AOI/geoid, elevation raster, survey point/CSV and DEM-download processing are not yet enabled online.** Do not use the hosted preview for those calculations until their availability is explicitly announced. The **local version supports the complete processing workflows** described below, subject to data availability and the documented limitations.
+The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevation-raster and point/CSV processing**. Online file-size, pixel-count and model restrictions apply, and **DEM acquisition, EGM96/EGM2008 and custom-grid processing remain available through the local installation rather than this hosted preview**. The **local version provides the full set of processing workflows** described below, subject to external service, model-grid and data availability.
 
 **[Download source code (ZIP)](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip)** · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
 
-> **Repository access:** While this GitHub repository remains private, the ZIP download and repository links require authorization. The hosted preview URL may be accessible independently. Public publication is pending third-party data and logo redistribution review.
+> **Availability:** Download and installation links work when repository access is granted. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
 
 ### Install locally (Windows)
 
@@ -87,7 +87,7 @@ GitHub also displays **“Cite this repository”**, generated from [CITATION.cf
 
 ## Overview
 
-The Geodetic & Elevation Data Toolkit is a local, browser-operated geospatial application for geoid/quasigeoid separation, vertical-height transformation, raster and coordinate conversion, reference DEM acquisition, and GPS time conversion. Its HTML interface communicates with a **Python server on the same computer**; the source files are processed locally. It is not a standalone offline HTML calculator. A separate hosted web preview is available, but full server-side scientific workflows currently require the local installation.
+The Geodetic & Elevation Data Toolkit is a local, browser-operated geospatial application for geoid/quasigeoid separation, vertical-height transformation, raster and coordinate conversion, reference DEM acquisition, and GPS time conversion. Its HTML interface communicates with a **Python server on the same computer**; the source files are processed locally. It is not a standalone offline HTML calculator. A separate hosted preview offers a restricted subset; full scientific workflows currently require the local installation.
 
 ### Feature index
 
@@ -225,6 +225,8 @@ geodetic-elevation-data-toolkit/
   NOTICE.md                  # attribution and third-party terms
   CITATION.cff               # software metadata
   CHANGELOG.md
+  release_smoke_test.py       # offline RAF20 regression check
+  RELEASE_NOTES_v5.0.0.md   # release documentation
 ```
 
 ## License and attribution
