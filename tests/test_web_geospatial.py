@@ -52,6 +52,22 @@ class GeoTests(unittest.TestCase):
         r=self.client.post("/run",data={"mode":"aoi","model":"raf20","resolution":"50",
             "aoi_parts":(io.BytesIO(payload),"bowtie.geojson")})
         self.assertEqual(r.status_code,200,r.get_data(as_text=True))
+    def test_qgis_sidecars_in_zip(self):
+        import geopandas as gpd
+        from shapely.geometry import Polygon
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as td:
+            shp=Path(td)/"watershed.shp"
+            gpd.GeoDataFrame({"id":[1]},geometry=[Polygon([(5.729,45.189),(5.731,45.189),(5.731,45.191),(5.729,45.189)])],crs="EPSG:4326").to_file(shp)
+            data=io.BytesIO()
+            with zipfile.ZipFile(data,"w") as z:
+                for p in Path(td).glob("watershed.*"):z.write(p,p.name)
+                z.writestr("watershed.shp.xml","<metadata/>")
+                z.writestr("watershed.qmd","QGIS metadata")
+            data.seek(0)
+            r=self.client.post("/inspect",data={"aoi_parts":(data,"watershed.zip")})
+            self.assertEqual(r.status_code,200,r.get_data(as_text=True))
     def test_block_local_path(self):
         r=self.client.post("/run",data={"mode":"raster","model":"raf20","raster_path":"/etc/passwd"})
         self.assertEqual(r.status_code,503)
