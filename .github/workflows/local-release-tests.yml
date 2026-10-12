@@ -1,0 +1,24 @@
+name: Local scientific release checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  offline-raf20:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install scientific dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile Python code
+        run: python -m py_compile geoid_web.py geoid_engine.py vertical_reference.py global_dem_downloader.py ign_lidarhd_downloader.py
+      - name: Test original RAF20 engine
+        run: python release_smoke_test.py
