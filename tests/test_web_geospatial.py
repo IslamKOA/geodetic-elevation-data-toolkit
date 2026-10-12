@@ -26,6 +26,10 @@ class GeoTests(unittest.TestCase):
     def test_aoi_real_output(self):
         r=self.client.post("/run",data={"mode":"aoi","model":"raf20","resolution":"30","aoi_parts":self.aoi()})
         self.assertEqual(r.status_code,200,r.get_data(as_text=True))
+        self.assertTrue(r.json["previews"],"Expected a generated PNG preview")
+        image=self.client.get(r.json["previews"][0]["url"])
+        self.assertEqual(image.status_code,200)
+        self.assertTrue(image.data.startswith(bytes([137,80,78,71])))
         z=self.client.get(r.json["download"])
         self.assertEqual(z.status_code,200)
         with zipfile.ZipFile(io.BytesIO(z.data)) as archive:
