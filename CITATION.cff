@@ -7,7 +7,7 @@ version: "5.0.0"
 authors:
   - family-names: "Koa"
     given-names: "Islam"
-    affiliation: "Université Grenoble Alpes; INRAE; An-Najah National University"
+    affiliation: "Institut des Géosciences de l’Environnement (IGE), INRAE, Université Grenoble Alpes; An-Najah National University"
 abstract: >-
   Local browser-based geodetic and elevation-data toolkit for geoid and
   quasigeoid grid extraction, ellipsoidal and physical height transformations,
