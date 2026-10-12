@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the software release and the relevant DEM/geodetic data providers."
+title: "Reference DEM Utility"
+type: software
+version: "1.0.1"
+date-released: "2026-08-23"
+authors:
+  - family-names: "Koa"
+    given-names: "Islam"
+  - family-names: "Recking"
+    given-names: "Alain"
+  - family-names: "Borgniet"
+    given-names: "Laurent"

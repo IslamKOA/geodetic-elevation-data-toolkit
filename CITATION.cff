@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: >-
+  If you use this toolkit, cite this software release.
+title: "Geodetic & Elevation Data Toolkit"
+type: software
+version: "5.0.0"
+date-released: "2026-10-08"
+authors:
+  - family-names: "Koa"
+    given-names: "Islam"
+    affiliation: "Université Grenoble Alpes; INRAE; An-Najah National University"
+abstract: >-
+  Local browser-based geodetic and elevation-data toolkit for geoid and
+  quasigeoid grid extraction, ellipsoidal and physical height transformations,
+  point and CSV calculations, GPS/UTC/Unix time conversion, raster previews, and optional Copernicus DEM,
+  SRTM and IGN LiDAR HD acquisition.
+keywords:
+  - geodesy
+  - geoid
+  - elevation
+  - GPS time
+  - GNSS
+  - vertical datum
+  - RAF20
+  - EGM96
+  - EGM2008
+  - DEM
+license: CeCILL-B
