@@ -61,8 +61,9 @@ def aoi_file(folder):
             for info in infos:
                 name=Path(info.filename)
                 if info.is_dir():continue
-                if len(name.parts)!=1 or name.suffix.lower() not in allowed or info.flag_bits&1:
-                    raise ValueError("ZIP must contain only flat, unencrypted shapefile components.")
+                if (name.is_absolute() or ".." in name.parts or "\\" in info.filename
+                    or name.suffix.lower() not in allowed or info.flag_bits&1):
+                    raise ValueError("ZIP contains an unsafe path, unsupported file, or encrypted entry.")
                 path=Path(folder)/secure_filename(name.name)
                 if path.exists():raise ValueError("Duplicate archive member.")
                 with archive.open(info) as source,open(path,"wb") as target:
@@ -84,8 +85,27 @@ def validate_aoi(path):
     if g.empty or len(g)>50 or g.crs is None:raise ValueError("AOI needs a defined CRS and at most 50 features.")
     if not all(v in {"Polygon","MultiPolygon"} for v in g.geom_type):
         raise ValueError("AOI needs polygon geometry.")
-    if any(p is None or p.is_empty or not p.is_valid for p in g.geometry):
-        raise ValueError("AOI polygons must be valid and nonempty.")
+    if any(p is None or p.is_empty for p in g.geometry):
+        raise ValueError("AOI contains empty geometries; check your input.")
+    # Match the local engine: do not reject common polygon topology issues.
+    # Repair a temporary copy only, and flag this repair to the user.
+    if any(not p.is_valid for p in g.geometry):
+        from shapely.validation import make_valid
+        g=g.copy()
+        repaired=[]
+        for geom in g.geometry:
+            candidate=make_valid(geom) if not geom.is_valid else geom
+            if candidate.geom_type=="GeometryCollection":
+                polys=[x for x in candidate.geoms if x.geom_type in {"Polygon","MultiPolygon"}]
+                from shapely.ops import unary_union
+                candidate=unary_union(polys) if polys else candidate
+            if candidate.is_empty or candidate.geom_type not in {"Polygon","MultiPolygon"} or not candidate.is_valid:
+                raise ValueError("AOI geometry could not be repaired safely; fix topology in QGIS.")
+            repaired.append(candidate)
+        g.geometry=repaired
+        g.attrs["geometry_repaired"]=True
+    else:
+        g.attrs["geometry_repaired"]=False
     vertices=sum(len(p.exterior.coords)+sum(len(r.coords) for r in p.interiors) for geom in g.geometry for p in (geom.geoms if geom.geom_type=="MultiPolygon" else [geom]))
     if vertices>15000:raise ValueError("Too many AOI vertices.")
     return g
@@ -143,6 +163,11 @@ def run_geo():
             if mode=="aoi":
                 aoi=aoi_file(folder)
                 g=validate_aoi(aoi)
+                if g.attrs.get("geometry_repaired"):
+                    # Engine must receive the repaired geometry, not the original invalid file.
+                    clean=folder/"validated_aoi.geojson"
+                    g.to_file(clean,driver="GeoJSON")
+                    aoi=clean
                 crs=output_crs(g,param("crs"))
                 resolution=float(param("resolution","30"))
                 if not math.isfinite(resolution) or not 1<=resolution<=10000:
@@ -162,7 +187,7 @@ def run_geo():
                     if ds.driver!="GTiff":raise ValueError("Input must be a GeoTIFF.")
                 products=raster_process(raster,folder,source,target,model,None)
                 message="Elevation raster transformed using original geoid engine."
-            metadata={"workflow":mode,"model_N":model,"source_vertical":source,"target_vertical":target,
+            metadata={"geometry_repaired":bool(g.attrs.get("geometry_repaired",False)) if mode=="aoi" else False,"workflow":mode,"model_N":model,"source_vertical":source,"target_vertical":target,
                 "caution":"RAF20 is regional and height datum assumptions require scientific validation.",
                 "scientific_engine":"original geoid_engine.py and vertical_reference.py"}
             url=store_result(products,metadata)
