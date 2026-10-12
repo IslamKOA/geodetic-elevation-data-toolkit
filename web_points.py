@@ -57,8 +57,10 @@ def _to_zip(filename, rows, metadata):
 
 @points_api.post("/run")
 def run_points():
-    if request.content_length is None or request.content_length>256*1024:
-        return _error("Maximum hosted request size is 256 KB.",413)
+    geo_requested = request.form.get("mode") in {"aoi", "raster"} and __import__("os").environ.get("WEB_ENABLE_GEO") == "1"
+    max_size = 12*1024*1024 if geo_requested else 256*1024
+    if request.content_length is None or request.content_length>max_size:
+        return _error("Request exceeds the hosted size limit.",413)
     if not _LOCK.acquire(blocking=False):
         return _error("A conversion is in progress. Try again shortly.",503)
     try:
