@@ -10,12 +10,17 @@ app.config["MAX_CONTENT_LENGTH"] = 32 * 1024
 app.config["MAX_FORM_MEMORY_SIZE"] = 32 * 1024
 
 HTML = (ROOT / "geoid_interface.html").read_text(encoding="utf-8")
-NOTICE = ('<div style="padding:12px 22px;background:#fff6e0;color:#654b12;'
-          'font-weight:600;text-align:center">Hosted preview: GPS Time runs in your browser. '
-          'Geoid/raster processing and DEM downloads are temporarily disabled until '
-          'server security and resource limits are validated. '
-          'Use the local v5.0 edition for calculations.</div>')
-HTML = HTML.replace("<body>", "<body>" + NOTICE, 1)
+HTML = HTML.replace("Research software · v2.4", "Research software · v5.0")
+HTML = HTML.replace("</head>", '<link rel="stylesheet" href="/web-style.css"></head>', 1)
+HTML = HTML.replace(
+    '<div class="container">',
+    '<div class="container"><div class="web-status" role="status"><span><span class="status-dot"></span><strong>Web preview</strong> · Interface and GPS Time available. Scientific processing is being prepared for hosted use.</span><a href="https://github.com/IslamKOA/geodetic-elevation-data-toolkit" target="_blank" rel="noopener noreferrer">View source ↗</a></div>',
+    1,
+)
+HTML = HTML.replace(
+    'Local browser utility. Files are processed by Python on your computer through <code>127.0.0.1</code>.',
+    'Hosted web preview. Scientific processing is currently disabled; the local edition remains available for full calculations.',
+)
 
 @app.after_request
 def headers(response):
@@ -33,6 +38,10 @@ def headers(response):
 @app.get("/")
 def index():
     return Response(HTML, content_type="text/html; charset=utf-8")
+
+@app.get("/web-style.css")
+def stylesheet():
+    return Response((ROOT / "web_style.css").read_text(encoding="utf-8"), content_type="text/css; charset=utf-8")
 
 @app.get("/health")
 def health():
