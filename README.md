@@ -1,9 +1,87 @@
-# Geodetic & Elevation Data Toolkit — Version 5.0.0
+# Geodetic & Elevation Data Toolkit
 
-**Developer:** Islam KOA  
-**Supervisors:** Alain Recking and Laurent Borgniet  
-**Institutional affiliations shown in the application:** Université Grenoble Alpes (UGA), INRAE ETNA, and An-Najah National University.  
-**Source-code license:** CeCILL-B (see `LICENSE` and `NOTICE.md`).
+**Geoid and vertical datum transformations · DEM acquisition · Survey coordinates · GPS time**
+
+**Version:** 5.0.0 · **Developer:** Islam KOA · **Supervisors:** Alain Recking and Laurent Borgniet  
+**Research affiliations:** Université Grenoble Alpes, INRAE ETNA, and An-Najah National University  
+**Source-code license:** [CeCILL-B](LICENSE) · [Attribution and third-party notices](NOTICE.md)
+
+![Ellipsoidal height, physical height, and geoid/quasigeoid separation concept](assets/Geoid_concept.png)
+
+*Geodetic height-reference concept. Illustration bundled with the toolkit; see [third-party material notices](NOTICE.md).*
+
+## What can this toolkit do?
+
+The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a newly downloaded DEM** to geoid/quasigeoid modelling and height-reference conversion. Users can obtain a model separation grid, transform elevations between compatible vertical references, or retrieve a reference DEM and optionally convert its heights.
+
+| Starting point | What you can do | Result |
+| --- | --- | --- |
+| **Area of interest (AOI)** | Delimit a polygon and calculate geoid/quasigeoid separation over the area using RAF20, EGM96, EGM2008, or a compatible custom GeoTIFF model | Separation raster (GeoTIFF), map preview, metadata |
+| **Existing elevation raster (DEM/DSM)** | Convert ellipsoidal heights **h** to model-consistent physical heights **H**, reverse the conversion, or transform between compatible height references | Converted GeoTIFF, separation grid(s), previews |
+| **Survey points or CSV** | Enter coordinates (with optional elevations) or import a CSV; calculate separation and converted elevations while retaining input fields | Point results or enriched CSV |
+| **DEM not yet available** | Request Copernicus GLO-30, SRTM1, or IGN LiDAR HD DSM for an AOI, with optional conversion to ellipsoidal heights | Downloaded DEM and, when selected, converted DEM |
+| **LiDAR / GNSS GPS timestamps** | Convert an extracted GPS-time value or GPS week + seconds-of-week to UTC and Unix time; inspect a sequence of timestamps to help identify acquisition dates/times | Human-readable UTC time and GPS/Unix equivalents |
+| **Advanced reference DEM work** | Browse the source notebook and scripts for DEM preparation, reprojection, and QC | [Advanced / Legacy source code](advanced_legacy/) |
+
+### Web version and desktop version
+
+**[Open the hosted website (web preview)](https://geodetic-elevation-toolkit-preview.onrender.com)**
+
+The hosted preview currently provides the interface and browser-based **GPS Time conversion**. **AOI/geoid, elevation raster, survey point/CSV and DEM-download processing are not yet enabled online.** Do not use the hosted preview for those calculations until their availability is explicitly announced. The **local version supports the complete processing workflows** described below, subject to data availability and the documented limitations.
+
+**[Download source code (ZIP)](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip)** · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
+
+> **Repository access:** While this GitHub repository remains private, the ZIP download and repository links require authorization. The hosted preview URL may be accessible independently. Public publication is pending third-party data and logo redistribution review.
+
+### Install locally (Windows)
+
+1. Download the source ZIP above and **extract** it.
+2. Install [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) if not already installed; create the environment once in PowerShell:
+
+   ```powershell
+   micromamba create -n geoid_tool -c conda-forge python=3.12 numpy scipy rasterio geopandas pyproj requests matplotlib pandas shapely affine -y
+   ```
+
+3. Open a terminal with the `geoid_tool` environment activated, then navigate to the extracted folder containing `geoid_web.py`. Example:
+
+   ```powershell
+   micromamba activate geoid_tool
+   cd "C:\Users\YourName\Downloads\geodetic-elevation-data-toolkit-main"
+   python geoid_web.py
+   ```
+
+4. Open **http://127.0.0.1:8765/** in your browser and keep the terminal open.
+
+**No manual `cd` when using the launcher:** `START_WINDOWS.bat` already executes `cd /d "%~dp0"` and changes automatically to the directory in which it resides. Double-click it **after** Python and its dependencies have been installed in an environment the launcher can discover. If it cannot discover your Micromamba environment, use steps 2–4 instead. Do not double-click `geoid_interface.html` alone: scientific processing needs the local Python server.
+
+For Linux/macOS, see [Installation and launch](#installation-and-launch) below.
+
+### LiDAR GPS time: interpreting acquisition timestamps
+
+The GPS Time panel is useful when reviewing **GPS-time attributes extracted from airborne LiDAR LAS/LAZ point clouds** to estimate the acquisition instant of individual points and the start/end of flight data coverage. First confirm from the LAS header and data provider whether the field is **GPS Week Time** or **Adjusted Standard GPS Time**. In LAS, adjusted standard GPS time has an offset of **1,000,000,000 seconds**; apply the appropriate input convention in the toolkit. GPS Week Time alone requires the correct GPS week (or sufficient flight metadata to establish it), and GPS time is not automatically UTC because leap seconds differ. **The tool converts time values; it does not open LAS/LAZ files, discover flight metadata, or independently establish the exact flight time without correctly interpreted input timestamps.** Check time zone, source metadata, and the leap-second table before using results.
+
+### How to cite this software
+
+If you use the toolkit for geoid modelling, DEM processing, coordinate conversion, or LiDAR/GNSS time interpretation in a publication, thesis, report, or project, please cite:
+
+> **Koa, I. (2026).** *Geodetic & Elevation Data Toolkit* (Version 5.0.0) [Computer software]. GitHub. https://github.com/IslamKOA/geodetic-elevation-data-toolkit
+
+**BibTeX:**
+
+```bibtex
+@software{koa_geodetic_elevation_toolkit_2026,
+  author  = {Koa, Islam},
+  title   = {Geodetic & Elevation Data Toolkit},
+  year    = {2026},
+  version = {5.0.0},
+  url     = {https://github.com/IslamKOA/geodetic-elevation-data-toolkit},
+  note    = {Geoid and vertical datum transformations, DEM acquisition and GPS time conversion}
+}
+```
+
+GitHub also displays **“Cite this repository”**, generated from [CITATION.cff](CITATION.cff). **A DOI has not yet been assigned.** If an archival DOI is registered later, the citation can be updated to include it. Cite the version actually used and, where appropriate, separately cite the original geodetic and elevation datasets.
+
+---
 
 ## Quick start
 
@@ -25,7 +103,7 @@ For rasters larger than the 400 MB browser upload limit, use the trusted-local-f
 
 ## Overview
 
-The Geodetic & Elevation Data Toolkit is a local, browser-operated geospatial application for geoid/quasigeoid separation, vertical-height transformation, raster and coordinate conversion, reference DEM acquisition, and GPS time conversion. Its HTML interface communicates with a **Python server on the same computer**; the source files are processed locally. It is not a standalone offline HTML calculator and has not been configured as a public web service.
+The Geodetic & Elevation Data Toolkit is a local, browser-operated geospatial application for geoid/quasigeoid separation, vertical-height transformation, raster and coordinate conversion, reference DEM acquisition, and GPS time conversion. Its HTML interface communicates with a **Python server on the same computer**; the source files are processed locally. It is not a standalone offline HTML calculator. A separate hosted web preview is available, but full server-side scientific workflows currently require the local installation.
 
 ### Feature index
 
