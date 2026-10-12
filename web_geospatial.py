@@ -62,8 +62,13 @@ def aoi_file(folder):
                 name=Path(info.filename)
                 if info.is_dir():continue
                 if (name.is_absolute() or ".." in name.parts or "\\" in info.filename
-                    or name.suffix.lower() not in allowed or info.flag_bits&1):
+                    or info.flag_bits&1):
                     raise ValueError("ZIP contains an unsafe path, unsupported file, or encrypted entry.")
+                # Ignore harmless GIS metadata sidecars; only approved geometry files are extracted.
+                if name.suffix.lower() not in allowed:
+                    if name.name.lower().endswith((".shp.xml", ".qmd", ".qpj", ".sbn", ".sbx")):
+                        continue
+                    raise ValueError("ZIP contains an unsupported member: "+name.name)
                 path=Path(folder)/secure_filename(name.name)
                 if path.exists():raise ValueError("Duplicate archive member.")
                 with archive.open(info) as source,open(path,"wb") as target:
