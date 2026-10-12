@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Local outputs and caches
+outputs/
+*.log
+tmp/
+temp/
+.DS_Store
+Thumbs.db
+.env
+
+# Generated rasters and previews
+height_converted.tif
+geoid_separation_N_*.tif
+DEM_ellipsoidal*.tif
+preview_*.png
+
+# Versioned bundles belong in GitHub Releases
+geodetic_elevation_data_toolkit_v*.zip
