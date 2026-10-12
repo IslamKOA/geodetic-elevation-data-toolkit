@@ -22,6 +22,22 @@ HTML = HTML.replace(
     'Hosted web preview. Scientific processing is currently disabled; the local edition remains available for full calculations.',
 )
 
+# Describe actual online availability instead of a stale preview-only notice.
+if os.environ.get("WEB_ENABLE_GEO") == "1":
+    HTML = HTML.replace(
+        "Interface and GPS Time available. Scientific processing is being prepared for hosted use.",
+        "GPS Time, points/CSV, and limited RAF20 AOI/GeoTIFF conversion available. EGM grids and DEM downloads remain local-only.",
+    )
+    HTML = HTML.replace(
+        "Hosted web preview. Scientific processing is currently disabled; the local edition remains available for full calculations.",
+        "Hosted scientific preview with bounded RAF20 AOI/GeoTIFF and point conversions. Use the local edition for large data, EGM grids and DEM acquisition.",
+    )
+elif os.environ.get("WEB_ENABLE_POINTS") == "1":
+    HTML = HTML.replace(
+        "Interface and GPS Time available. Scientific processing is being prepared for hosted use.",
+        "GPS Time and bounded RAF20 points/CSV available. AOI, raster and DEM download workflows remain local-only.",
+    )
+
 @app.after_request
 def headers(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
