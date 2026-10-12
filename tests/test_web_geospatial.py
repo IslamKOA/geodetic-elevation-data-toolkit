@@ -30,6 +30,28 @@ class GeoTests(unittest.TestCase):
         self.assertEqual(z.status_code,200)
         with zipfile.ZipFile(io.BytesIO(z.data)) as archive:
             self.assertIn("geoid_separation_N_raf20.tif",archive.namelist())
+    def test_nested_shapefile_zip(self):
+        import geopandas as gpd
+        from shapely.geometry import Polygon
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as td:
+            shp=Path(td)/"watershed.shp"
+            gpd.GeoDataFrame({"id":[1]},geometry=[Polygon([(5.729,45.189),(5.731,45.189),(5.731,45.191),(5.729,45.189)])],crs="EPSG:4326").to_file(shp)
+            data=io.BytesIO()
+            with zipfile.ZipFile(data,"w") as z:
+                for p in Path(td).glob("watershed.*"):z.write(p,"user_exports/shapes/"+p.name)
+            data.seek(0)
+            r=self.client.post("/inspect",data={"aoi_parts":(data,"watershed.zip")})
+            self.assertEqual(r.status_code,200,r.get_data(as_text=True))
+    def test_invalid_polygon_repair(self):
+        geom={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{
+            "type":"Polygon","coordinates":[[[5.729,45.189],[5.731,45.191],[5.729,45.191],[5.731,45.189],[5.729,45.189]]]},
+            "properties":{}}]}
+        payload=json.dumps(geom).encode("utf8")
+        r=self.client.post("/run",data={"mode":"aoi","model":"raf20","resolution":"50",
+            "aoi_parts":(io.BytesIO(payload),"bowtie.geojson")})
+        self.assertEqual(r.status_code,200,r.get_data(as_text=True))
     def test_block_local_path(self):
         r=self.client.post("/run",data={"mode":"raster","model":"raf20","raster_path":"/etc/passwd"})
         self.assertEqual(r.status_code,503)
