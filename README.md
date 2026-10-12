@@ -10,7 +10,7 @@
 
 *Geodetic height-reference concept. Illustration bundled with the toolkit; see [third-party material notices](NOTICE.md).*
 
-**Validation and reproducibility:** [Scientific smoke test](release_smoke_test.py) · [Validation and publication notes](RELEASE_READINESS.md). The local installation is the reference implementation; the hosted website is a limited demonstration.
+**Reproducibility:** [Run the scientific smoke test](release_smoke_test.py). The local installation is the full software edition; the [hosted website](https://geodetic-elevation-toolkit-preview.onrender.com) is a limited demonstration.
 
 ## What can this toolkit do?
 
