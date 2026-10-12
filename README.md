@@ -2,8 +2,8 @@
 
 **Geoid and vertical datum transformations · DEM acquisition · Survey coordinates · GPS time**
 
-**Version:** 5.0.0 · **Developer:** Islam KOA · **Supervisors:** Alain Recking and Laurent Borgniet  
-**Research affiliations:** Université Grenoble Alpes, INRAE ETNA, and An-Najah National University  
+**Version:** 5.0.0 · **Developer:** Islam KOA · **Supervisors:** Alain Recking (IGE) and Laurent Borgniet (LESSEM)  
+**Research affiliations:** Institut des Géosciences de l’Environnement (IGE), INRAE – Université Grenoble Alpes, and An-Najah National University  
 **Source-code license:** [CeCILL-B](LICENSE) · [Attribution and third-party notices](NOTICE.md)
 
 ![Ellipsoidal height, physical height, and geoid/quasigeoid separation concept](assets/Geoid_concept.png)
