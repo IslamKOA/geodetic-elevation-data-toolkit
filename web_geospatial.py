@@ -18,6 +18,7 @@ from werkzeug.utils import secure_filename
 geo_api=Blueprint("geo_api",__name__)
 GEO_LOCK=threading.BoundedSemaphore(1)
 FILES={}
+PREVIEWS={}
 FILES_LOCK=threading.Lock()
 TTL=180
 MAX_AOI_PIXELS=150000
@@ -122,7 +123,7 @@ def output_crs(g,requested):
         raise ValueError("Output CRS must be projected in metres.")
     return crs.to_string()
 
-def store_result(paths,metadata):
+def store_result(paths,metadata,preview_bytes=None):
     out=io.BytesIO()
     with zipfile.ZipFile(out,"w",compression=zipfile.ZIP_DEFLATED) as z:
         for path in paths:z.write(path,Path(path).name)
@@ -135,6 +136,9 @@ def store_result(paths,metadata):
             if now-t>TTL:FILES.pop(k,None)
         if len(FILES)>8:FILES.pop(min(FILES,key=lambda x:FILES[x][0]),None)
         FILES[token]=(now,out.getvalue())
+        if preview_bytes: PREVIEWS[token]=(now,preview_bytes)
+        for key,(created,_) in list(PREVIEWS.items()):
+            if now-created>TTL: PREVIEWS.pop(key,None)
     return "/geo-download/"+token
 
 @geo_api.post("/inspect")
@@ -195,8 +199,19 @@ def run_geo():
             metadata={"geometry_repaired":bool(g.attrs.get("geometry_repaired",False)) if mode=="aoi" else False,"workflow":mode,"model_N":model,"source_vertical":source,"target_vertical":target,
                 "caution":"RAF20 is regional and height datum assumptions require scientific validation.",
                 "scientific_engine":"original geoid_engine.py and vertical_reference.py"}
-            url=store_result(products,metadata)
-            return jsonify(ok=True,message=message,download=url,files=[Path(p).name for p in products],previews=[])
+            from geoid_web import create_previews
+            previews=create_previews(products,folder)
+            preview_bytes={}
+            for p in previews:
+                filename=Path(p["url"]).name
+                image=folder/filename
+                if image.is_file() and image.stat().st_size<=5*1024*1024:
+                    preview_bytes[filename]=image.read_bytes()
+            url=store_result(products,metadata,preview_bytes)
+            token=url.rsplit("/",1)[-1]
+            previews=[dict(p,url="/geo-preview/"+token+"/"+Path(p["url"]).name)
+                      for p in previews if Path(p["url"]).name in preview_bytes]
+            return jsonify(ok=True,message=message,download=url,files=[Path(p).name for p in products],previews=previews)
     except Exception as e:
         return fail(str(e))
     finally:
@@ -208,3 +223,15 @@ def download(token):
     with FILES_LOCK: record=FILES.pop(token,None)
     if record is None or time.time()-record[0]>TTL:return fail("Download expired; run again.",404)
     return Response(record[1],mimetype="application/zip",headers={"Content-Disposition":"attachment; filename=geodetic_raster_results.zip","Cache-Control":"no-store"})
+
+@geo_api.get("/geo-preview/<token>/<filename>")
+def preview(token,filename):
+    if not re.fullmatch(r"[A-Za-z0-9_-]{30,64}",token) or not re.fullmatch(r"preview_[0-9]+[.]png",filename):
+        return fail("Invalid preview.",404)
+    with FILES_LOCK:
+        record=PREVIEWS.get(token)
+        if record is None or time.time()-record[0]>TTL:
+            return fail("Preview expired.",404)
+        data=record[1].get(filename)
+    if data is None:return fail("Preview unavailable.",404)
+    return Response(data,mimetype="image/png",headers={"Cache-Control":"no-store"})
