@@ -2,7 +2,7 @@
 
 **Software:** Geodetic & Elevation Data Toolkit v5.0.0  
 **Developer:** Islam KOA  
-**Supervisors acknowledged:** Alain Recking and Laurent Borgniet  
+**Supervisors acknowledged:** Alain Recking (IGE) and Laurent Borgniet (LESSEM)  
 **License for original toolkit source code:** CeCILL-B (see [LICENSE](LICENSE)).
 
 This toolkit incorporates and adapts components from the developer's earlier
