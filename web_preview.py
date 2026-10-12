@@ -6,8 +6,8 @@ from werkzeug.exceptions import RequestEntityTooLarge
 
 ROOT = Path(__file__).resolve().parent
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 32 * 1024
-app.config["MAX_FORM_MEMORY_SIZE"] = 32 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
+app.config["MAX_FORM_MEMORY_SIZE"] = 64 * 1024
 
 HTML = (ROOT / "geoid_interface.html").read_text(encoding="utf-8")
 HTML = HTML.replace("Research software · v2.4", "Research software · v5.0")
@@ -53,13 +53,17 @@ def asset(name):
         return jsonify(error="Not found"), 404
     return send_file(ROOT / "assets" / name, mimetype="image/png")
 
+# AOI/raster features are separately gated until test and scientific verification.
+if os.environ.get("WEB_ENABLE_GEO", "0") == "1":
+    from web_geospatial import geo_api
+    app.register_blueprint(geo_api)
+
 # Scientific processing remains opt-in until validation on representative control points.
 if os.environ.get("WEB_ENABLE_POINTS", "0") == "1":
     from web_points import points_api
     app.register_blueprint(points_api)
 
 @app.post("/dem")
-@app.post("/inspect")
 def disabled():
     return jsonify(error=("Hosted scientific processing is not yet enabled. "
                           "Please use the local toolkit while the web backend is validated.")), 503
