@@ -63,6 +63,9 @@ def run_points():
         return _error("A conversion is in progress. Try again shortly.",503)
     try:
         mode=_text("mode")
+        if mode in {"aoi", "raster"} and __import__("os").environ.get("WEB_ENABLE_GEO") == "1":
+            from web_geospatial import run_geo
+            return run_geo()
         if mode not in {"points","csv"}:
             return _error("This hosted preview currently accepts only manual points or CSV; use the local edition for raster and AOI processing.",503)
         model=_text("model","raf20").lower()
