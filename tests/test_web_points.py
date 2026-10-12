@@ -12,8 +12,8 @@ class PointApiTests(unittest.TestCase):
         self.assertEqual(self.client.get("/health").status_code,200)
     def test_dem_disabled(self):
         self.assertEqual(self.client.post("/dem").status_code,503)
-    def test_raster_disabled(self):
-        self.assertEqual(self.client.post("/run",data={"mode":"raster"}).status_code,503)
+    def test_raster_requires_input(self):
+        self.assertEqual(self.client.post("/run",data={"mode":"raster"}).status_code,400)
     def test_egm_disabled(self):
         self.assertEqual(self.client.post("/run",data={"mode":"points","points":"2,45","model":"egm96"}).status_code,503)
     def test_invalid_point(self):
