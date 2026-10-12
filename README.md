@@ -10,6 +10,8 @@
 
 *Geodetic height-reference concept. Illustration bundled with the toolkit; see [third-party material notices](NOTICE.md).*
 
+**Release verification:** [Scientific smoke test](release_smoke_test.py) · [Release readiness and publication plan](RELEASE_READINESS.md). The local software is the reference implementation; the online service is a limited preview. Public release awaits independent validation and third-party redistribution checks.
+
 ## What can this toolkit do?
 
 The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a newly downloaded DEM** to geoid/quasigeoid modelling and height-reference conversion. Users can obtain a model separation grid, transform elevations between compatible vertical references, or retrieve a reference DEM and optionally convert its heights.
