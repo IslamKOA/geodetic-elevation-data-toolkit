@@ -1,6 +1,6 @@
 # v5.0.0 — Local Geodetic & Elevation Data Toolkit
 
-**Release status: prepared, not published.** This release note describes the local installable software on the `main` branch. The Render-hosted website is a limited preview, not a substitute for the full local edition.
+This release documents the locally installable toolkit. The Render-hosted demonstration provides selected RAF20 workflows and GPS Time, with resource and model limitations; the complete workflow set is available in the local edition.
 
 ## Features
 - Geoid / height-anomaly AOI raster generation.
@@ -25,13 +25,10 @@
 - Geoid/quasigeoid model, vertical datum and coverage must be checked for each input raster.
 - Installation packages depend on external Python libraries and official data providers.
 
-## Release-blocking prerequisites
-- Confirm that the bundled IGN `RAF20.tac`, the embedded institutional logos and diagrams may be redistributed in this repository under their own terms.
-- Approve the final interface: the GitHub `geoid_interface.html` differs from the original uploaded v5.0 ZIP.
-- Ensure the README and citation metadata match the exact tagged release and document the EGM grid provenance.
-- Record known numerical validation limitations in the public release description.
+## Reproducibility and third-party attribution
+- The bundled IGN `RAF20.tac`, institutional logos, illustrations, optional geodetic grids and downloaded DEMs retain their original licensing conditions; consult [NOTICE.md](NOTICE.md) and the relevant data providers. The CeCILL-B source license does not grant rights to third-party materials.
+- The software cannot infer the source DEM's vertical datum: users must identify it from metadata before selecting a transformation.
+- Exact model-grid provenance, CRS realization and numeric validation must be documented for scientific use.
 
-## Publication handoff
-After approval, tag the reviewed commit `v5.0.0`, create a GitHub Release using this text, verify its automatically generated source ZIP, and archive the source in Software Heritage/HAL. Record actual persistent identifiers when they exist. Publish associated licensed test data and reproducibility results separately via Recherche Data Gouv.
-
-Do not make the repository public or claim a DOI without the owner's approval and completed redistribution review.
+## Citation and permanent archiving
+See [CITATION.cff](CITATION.cff) for software citation details. Upon publication, a tagged source release may be archived with Software Heritage/HAL, and corresponding reproducibility datasets may be deposited in Recherche Data Gouv. Add persistent identifiers only when officially assigned.
