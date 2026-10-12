@@ -83,24 +83,6 @@ GitHub also displays **“Cite this repository”**, generated from [CITATION.cf
 
 ---
 
-## Quick start
-
-**The toolkit is a local browser application:** the HTML interface requires a running Python backend. GitHub Pages alone cannot execute raster conversions.
-
-1. Download or clone the repository and open a terminal in the folder containing `geoid_web.py`.
-2. Create and activate a Micromamba environment:
-
-```powershell
-micromamba create -n geoid_tool -c conda-forge python=3.12 numpy scipy rasterio geopandas pyproj requests matplotlib pandas shapely affine -y
-micromamba activate geoid_tool
-```
-
-3. Run `python geoid_web.py`, and open **http://127.0.0.1:8765/** in your browser. Keep the terminal open.
-
-For rasters larger than the 400 MB browser upload limit, use the trusted-local-file-path option in the elevation raster panel. External DEM provider access and availability are not guaranteed. Before converting heights, verify the input vertical datum and the selected model's geographic coverage.
-
-**Project resources:** [License](LICENSE) · [Third-party materials](NOTICE.md) · [Changelog](CHANGELOG.md) · [Citation](CITATION.cff).
-
 ## Overview
 
 The Geodetic & Elevation Data Toolkit is a local, browser-operated geospatial application for geoid/quasigeoid separation, vertical-height transformation, raster and coordinate conversion, reference DEM acquisition, and GPS time conversion. Its HTML interface communicates with a **Python server on the same computer**; the source files are processed locally. It is not a standalone offline HTML calculator. A separate hosted web preview is available, but full server-side scientific workflows currently require the local installation.
