@@ -38,6 +38,14 @@ elif os.environ.get("WEB_ENABLE_POINTS") == "1":
         "GPS Time and bounded RAF20 points/CSV available. AOI, raster and DEM download workflows remain local-only.",
     )
 
+# Avoid presenting a guaranteed-error DEM submit button as an available feature.
+HTML = HTML.replace(
+    '<button type="submit" class="submit" id="demsubmit">Download DEM</button>',
+    '<button type="button" class="submit" id="demsubmit" disabled '
+    'title="DEM downloads require a dedicated hosted processing service">DEM download — local version only</button>'
+    '<p class="hint">Hosted DEM acquisition is not available on this server. '
+    'Use the local v5.0 toolkit for Copernicus, SRTM and IGN processing.</p>',
+)
 @app.after_request
 def headers(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
