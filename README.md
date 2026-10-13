@@ -31,33 +31,29 @@ The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a 
 
 The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevation-raster and point/CSV processing**. Online file-size, pixel-count and model restrictions apply, and **DEM acquisition, EGM96/EGM2008 and custom-grid processing remain available through the local installation rather than this hosted preview**. The **local version provides the full set of processing workflows** described below, subject to external service, model-grid and data availability.
 
-**[Download stable v5.0.0 source ZIP](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/tags/v5.0.0.zip)** · [Windows installation from scratch](INSTALL_WINDOWS_MICROMAMBA.md) · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
+**[Download stable v5.0.0 source ZIP](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/tags/v5.0.0.zip)** · [Automatic Windows setup](INSTALL_WINDOWS_AUTO.ps1) · [Manual installation](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md) · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
 
 > **Availability:** This repository and the v5.0.0 source release are public. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
 
 ### Install locally (Windows)
 
-**New to Python or Conda?** Start with the **[complete Micromamba installation guide for Windows](INSTALL_WINDOWS_MICROMAMBA.md)**. It explains how to download Micromamba, install Python and geospatial dependencies, launch the toolkit, and verify the setup without needing an existing Conda installation.
+**Option A — Automatic installation (recommended if Conda or Micromamba is already installed)**
 
+Open PowerShell and run this **single command**. Review the [installer source](INSTALL_WINDOWS_AUTO.ps1) first, because it downloads and runs a PowerShell script from this repository:
 
-1. Download the source ZIP above and **extract** it.
-2. Install [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) if not already installed; create the environment once in PowerShell:
+```powershell
+irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex
+```
 
-   ```powershell
-   micromamba create -n geoid_tool -c conda-forge python=3.12 numpy scipy rasterio geopandas pyproj requests matplotlib pandas shapely affine -y
-   ```
+The installer detects **Conda or Micromamba**, downloads and extracts the official **v5.0.0** source into `%LOCALAPPDATA%\\GeodeticElevationToolkit`, creates or reuses a `geoid_tool` environment, validates Python dependencies, and generates **Launch Geodetic Toolkit.cmd**. It does not require a manual source ZIP download or a particular working directory. It will not delete an existing installation.
 
-3. Open a terminal with the `geoid_tool` environment activated, then navigate to the extracted folder containing `geoid_web.py`. Example:
+**If neither Conda nor Micromamba is installed**, first follow the [Micromamba setup guide](INSTALL_WINDOWS_MICROMAMBA.md) (no separate Python installation required), then run the command above.
 
-   ```powershell
-   micromamba activate geoid_tool
-   cd "C:\Users\YourName\Downloads\geodetic-elevation-data-toolkit-main"
-   python geoid_web.py
-   ```
+**Option B — Manual setup**
 
-4. Open **http://127.0.0.1:8765/** in your browser and keep the terminal open.
+For users who prefer not to execute a downloaded installer script, see [Windows installation with Conda or Micromamba](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md). Both managers support the toolkit; choose whichever is already installed. The steps include protection against user-profile NumPy/SciPy conflicts.
 
-**No manual `cd` when using the launcher:** `START_WINDOWS.bat` already executes `cd /d "%~dp0"` and changes automatically to the directory in which it resides. Double-click it **after** Python and its dependencies have been installed in an environment the launcher can discover. If it cannot discover your Micromamba environment, use steps 2–4 instead. Do not double-click `geoid_interface.html` alone: scientific processing needs the local Python server.
+The full local application starts at **http://127.0.0.1:8765/**. Keep the server terminal open while using it. The HTML file alone does not perform scientific processing.
 
 For Linux/macOS, see [Installation and launch](#installation-and-launch) below.
 
