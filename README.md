@@ -31,11 +31,14 @@ The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a 
 
 The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevation-raster and point/CSV processing**. Online file-size, pixel-count and model restrictions apply, and **DEM acquisition, EGM96/EGM2008 and custom-grid processing remain available through the local installation rather than this hosted preview**. The **local version provides the full set of processing workflows** described below, subject to external service, model-grid and data availability.
 
-**[Download source code (ZIP)](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip)** · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
+**[Download stable v5.0.0 source ZIP](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/tags/v5.0.0.zip)** · [Windows installation from scratch](INSTALL_WINDOWS_MICROMAMBA.md) · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
 
-> **Availability:** Download and installation links work when repository access is granted. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
+> **Availability:** This repository and the v5.0.0 source release are public. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
 
 ### Install locally (Windows)
+
+**New to Python or Conda?** Start with the **[complete Micromamba installation guide for Windows](INSTALL_WINDOWS_MICROMAMBA.md)**. It explains how to download Micromamba, install Python and geospatial dependencies, launch the toolkit, and verify the setup without needing an existing Conda installation.
+
 
 1. Download the source ZIP above and **extract** it.
 2. Install [Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html) if not already installed; create the environment once in PowerShell:
@@ -208,6 +211,7 @@ Processing outputs are delivered in a **results ZIP** with `metadata.json`; rele
 geodetic-elevation-data-toolkit/
   README.md                  # main user guide (this file)
   README_GEOID.md            # additional copy of the user guide
+  INSTALL_WINDOWS_MICROMAMBA.md # Windows installation from scratch
   geoid_interface.html       # local browser UI and GPS Time panel
   geoid_web.py               # local HTTP server and result previews
   geoid_engine.py            # height and separation processing
