@@ -46,6 +46,26 @@ if ($LASTEXITCODE -ne 0) {
 }
 & $manager run -n $envName python -c "import sys,numpy,scipy,rasterio,geopandas,pyproj; print('Python:',sys.executable); print('NumPy:',numpy.__version__,numpy.__file__); print('SciPy:',scipy.__version__,scipy.__file__)"
 if ($LASTEXITCODE -ne 0) { throw "Environment validation failed." }
+$waitScript = Join-Path $base "Open Toolkit When Ready.ps1"
+$waitContent = @'
+$deadline = (Get-Date).AddSeconds(120)
+while ((Get-Date) -lt $deadline) {
+  try {
+    $client = New-Object System.Net.Sockets.TcpClient
+    $result = $client.BeginConnect("127.0.0.1",8765,$null,$null)
+    if ($result.AsyncWaitHandle.WaitOne(500)) {
+      $client.EndConnect($result)
+      $client.Close()
+      Start-Process "http://127.0.0.1:8765/"
+      exit 0
+    }
+    $client.Close()
+  } catch { }
+  Start-Sleep -Seconds 1
+}
+Write-Warning "Toolkit server did not start within two minutes. Check the server window."
+'@
+Set-Content -LiteralPath $waitScript -Value $waitContent -Encoding UTF8
 $launcher = Join-Path $base "Launch Geodetic Toolkit.cmd"
 $contents = @"
 @echo off
@@ -54,13 +74,21 @@ set "PYTHONNOUSERSITE=1"
 set "PYTHONPATH="
 cd /d "$folder"
 echo Starting Geodetic and Elevation Data Toolkit...
-start "" "http://127.0.0.1:8765/"
-$manager run -n $envName python geoid_web.py
+start "" powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$waitScript"
+call $manager run -n $envName python geoid_web.py
 echo.
 echo Server stopped. Inspect any error above.
 pause
 "@
 Set-Content -LiteralPath $launcher -Value $contents -Encoding ASCII
-Write-Host "Installation complete. Launcher: $launcher" -ForegroundColor Green
-Write-Host "Run the launcher at any time; no manual ZIP extraction or folder setup needed."
+$desktop = [Environment]::GetFolderPath("Desktop")
+$shortcut = Join-Path $desktop "Geodetic Elevation Toolkit.lnk"
+$wsh = New-Object -ComObject WScript.Shell
+$link = $wsh.CreateShortcut($shortcut)
+$link.TargetPath = $launcher
+$link.WorkingDirectory = $folder
+$link.Description = "Start Geodetic and Elevation Data Toolkit v5.0.0"
+$link.Save()
+Write-Host "Installation complete. Desktop shortcut: $shortcut" -ForegroundColor Green
+Write-Host "Double-click this shortcut to open the toolkit in your browser after the local server starts."
 Start-Process -FilePath $launcher
