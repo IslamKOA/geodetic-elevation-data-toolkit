@@ -35,6 +35,11 @@ if (-not (Test-Path $entry)) {
 Write-Host "Toolkit source: $folder" -ForegroundColor Green
 $check = & $manager run -n $envName python -c "import numpy, scipy, rasterio, geopandas, pyproj" 2>&1
 if ($LASTEXITCODE -ne 0) {
+  $environments = & $manager env list --json | ConvertFrom-Json
+  $existing = @($environments.envs | Where-Object { (Split-Path $_ -Leaf) -eq $envName })
+  if ($existing.Count -gt 0) {
+    throw "An existing '$envName' environment failed its dependency check. It was NOT modified. See INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md to repair it, or create a clean environment."
+  }
   Write-Host "Creating the $envName environment..." -ForegroundColor Cyan
   & $manager create -n $envName --override-channels -c conda-forge @packages -y
   if ($LASTEXITCODE -ne 0) { throw "Environment creation failed." }
