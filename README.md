@@ -47,6 +47,15 @@ irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/m
 
 The installer detects **Conda or Micromamba**, downloads and extracts the official **v5.0.0** source into `%LOCALAPPDATA%\\GeodeticElevationToolkit`, creates or reuses a `geoid_tool` environment, validates Python dependencies, and generates **Launch Geodetic Toolkit.cmd**. It does not require a manual source ZIP download or a particular working directory. It will not delete an existing installation.
 
+**How to open the toolkit after automatic installation:**
+
+1. When installation finishes, the toolkit is launched automatically. Wait for the local server to start; your default browser should open **http://127.0.0.1:8765/**.
+2. **For every later use:** find the **Geodetic Elevation Toolkit** shortcut on your **Windows Desktop** and **double-click it**. You do not need to open PowerShell, activate Conda/Micromamba, or navigate to the source folder.
+3. Keep the server/terminal window open while working in the browser. Closing it stops the local processing server.
+4. If the browser does not open automatically, wait until the server starts, then manually visit **http://127.0.0.1:8765/**. If it still fails, read the error in the server window.
+
+The automatic installer also keeps a launcher in `%LOCALAPPDATA%\\GeodeticElevationToolkit\\Launch Geodetic Toolkit.cmd` in case the Desktop shortcut is unavailable.
+
 **If neither Conda nor Micromamba is installed**, first follow the [Micromamba setup guide](INSTALL_WINDOWS_MICROMAMBA.md) (no separate Python installation required), then run the command above.
 
 **Option B — Manual setup**
