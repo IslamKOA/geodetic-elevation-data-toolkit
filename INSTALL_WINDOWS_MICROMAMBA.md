@@ -38,15 +38,24 @@ This may take several minutes and requires an internet connection. You do not ne
 
 ```powershell
 micromamba activate geoid_tool
+$env:PYTHONNOUSERSITE = "1"
 cd "C:\Users\YourName\Documents\geodetic-elevation-data-toolkit-5.0.0"
 python geoid_web.py
 ```
 
 Replace the example folder path with your actual extracted folder. Keep the PowerShell terminal open. In a browser visit **http://127.0.0.1:8765/**.
 
+**Important for computers with an existing Python installation:** The `PYTHONNOUSERSITE` setting prevents packages installed under `AppData\\Roaming\\Python` from overriding the NumPy/SciPy versions in this environment. Before running the application, verify the imports with:
+
+```powershell
+python -c "import numpy, scipy; print(numpy.__version__, numpy.__file__); print(scipy.__version__, scipy.__file__)"
+```
+
+Both module paths should refer to the activated `geoid_tool` environment. If the wrong packages still load, investigate `PYTHONPATH` or mixed pip/conda installations; do not delete other environments.
+
 To stop the application, press **Ctrl+C** in PowerShell. To launch again later, activate `geoid_tool`, navigate to the project directory, and run `python geoid_web.py`.
 
-**Alternative without activation:** `micromamba run -n geoid_tool python geoid_web.py` from the software directory.
+**Alternative without activation:** after setting `$env:PYTHONNOUSERSITE = "1"`, run `micromamba run -n geoid_tool python geoid_web.py` from the software directory.
 
 ## 5. Verify the installation
 
@@ -62,6 +71,7 @@ A passing test checks sample RAF20 point, AOI and raster calculations. It is not
 
 - **Micromamba is not recognized:** restart PowerShell after installation, or use the full executable path above.
 - **Activate fails:** run `micromamba shell init -s powershell -r "$env:USERPROFILE\micromamba"`, close PowerShell and reopen it. If your installer selected a different root directory, use that root instead.
+- **NumPy/SciPy conflict (`numpy has no attribute long`):** set `$env:PYTHONNOUSERSITE = "1"`, confirm both modules import from the same environment, and relaunch.
 - **Cannot connect to the application:** start `python geoid_web.py` and keep PowerShell open; check error messages in the terminal.
 - **Port 8765 is already used:** close a previously running toolkit server.
 - **Missing geodetic grids:** EGM96/EGM2008 may need PROJ grid downloads; verify network access and selected model coverage.
