@@ -46,6 +46,16 @@ if ($LASTEXITCODE -ne 0) {
 }
 & $manager run -n $envName python -c "import sys,numpy,scipy,rasterio,geopandas,pyproj; print('Python:',sys.executable); print('NumPy:',numpy.__version__,numpy.__file__); print('SciPy:',scipy.__version__,scipy.__file__)"
 if ($LASTEXITCODE -ne 0) { throw "Environment validation failed." }
+# Resolve the full environment interpreter path; Desktop shortcuts do not inherit the Conda PowerShell functions.
+$envInfo = & $manager env list --json | ConvertFrom-Json
+$prefixes = @($envInfo.envs | Where-Object { (Split-Path $_ -Leaf) -eq $envName })
+if ($prefixes.Count -ne 1) { throw "Expected one $envName environment for $manager; found $($prefixes.Count). Please inspect your environment configuration." }
+$envPrefix = [string]$prefixes[0]
+$pythonExe = Join-Path $envPrefix "python.exe"
+if (-not (Test-Path -LiteralPath $pythonExe)) { throw "Python executable not found at $pythonExe" }
+# Ensure the standalone interpreter imports the same packages without environment-manager shell commands.
+& $pythonExe -c "import sys,numpy,scipy,rasterio,geopandas,pyproj; print('Environment verified:',sys.executable)"
+if ($LASTEXITCODE -ne 0) { throw "The selected environment Python could not import the required packages." }
 $waitScript = Join-Path $base "Open Toolkit When Ready.ps1"
 $waitContent = @'
 $deadline = (Get-Date).AddSeconds(120)
@@ -73,9 +83,11 @@ setlocal
 set "PYTHONNOUSERSITE=1"
 set "PYTHONPATH="
 cd /d "$folder"
+set "PATH=$envPrefix\Library\bin;$envPrefix\Scripts;$envPrefix;%PATH%"
+set "CONDA_PREFIX=$envPrefix"
 echo Starting Geodetic and Elevation Data Toolkit...
 start "" powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$waitScript"
-call $manager run -n $envName python geoid_web.py
+"$pythonExe" geoid_web.py
 echo.
 echo Server stopped. Inspect any error above.
 pause
