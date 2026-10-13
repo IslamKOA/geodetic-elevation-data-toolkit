@@ -27,7 +27,7 @@ The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a 
 
 ### Web version and desktop version
 
-**[Open the hosted website (web preview)](https://geodetic-elevation-toolkit-preview.onrender.com)**
+**[Project homepage (fast-loading GitHub Pages)](https://islamkoa.github.io/geodetic-elevation-data-toolkit/)** *(available after GitHub Pages is enabled)* · **[Open the hosted scientific preview](https://geodetic-elevation-toolkit-preview.onrender.com)**
 
 The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevation-raster and point/CSV processing**. Online file-size, pixel-count and model restrictions apply, and **DEM acquisition, EGM96/EGM2008 and custom-grid processing remain available through the local installation rather than this hosted preview**. The **local version provides the full set of processing workflows** described below, subject to external service, model-grid and data availability.
 
