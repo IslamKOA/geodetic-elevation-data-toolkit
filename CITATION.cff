@@ -8,6 +8,12 @@ authors:
   - family-names: "Koa"
     given-names: "Islam"
     affiliation: "Institut des Géosciences de l’Environnement (IGE), INRAE, Université Grenoble Alpes; An-Najah National University"
+  - family-names: "Recking"
+    given-names: "Alain"
+    affiliation: "Institut des Géosciences de l’Environnement (IGE)"
+  - family-names: "Borgniet"
+    given-names: "Laurent"
+    affiliation: "Laboratoire des EcoSystèmes et des Sociétés en Montagne (LESSEM)"
 abstract: >-
   Local browser-based geodetic and elevation-data toolkit for geoid and
   quasigeoid grid extraction, ellipsoidal and physical height transformations,
