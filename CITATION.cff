@@ -4,6 +4,8 @@ message: >-
 title: "Geodetic & Elevation Data Toolkit"
 type: software
 version: "5.0.0"
+doi: "10.57745/1O0YRE"
+url: "https://doi.org/10.57745/1O0YRE"
 authors:
   - family-names: "Koa"
     given-names: "Islam"
