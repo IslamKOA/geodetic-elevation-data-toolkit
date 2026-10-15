@@ -74,24 +74,29 @@ The GPS Time panel is useful when reviewing **GPS-time attributes extracted from
 
 ### How to cite this software
 
-If you use the toolkit for geoid modelling, DEM processing, coordinate conversion, or LiDAR/GNSS time interpretation in a publication, thesis, report, or project, please cite:
+The **Geodetic & Elevation Data Toolkit v5.0.0** has been published in **Recherche Data Gouv** (dataset version V1) with the permanent DOI **[10.57745/1O0YRE](https://doi.org/10.57745/1O0YRE)**.
 
-> **Koa, I., Recking, A., & Borgniet, L. (2026).** *Geodetic & Elevation Data Toolkit* (Version 5.0.0) [Computer software]. GitHub. https://github.com/IslamKOA/geodetic-elevation-data-toolkit
+**Recommended citation:**
 
-**BibTeX:**
+> **Koa, I., Recking, A., & Borgniet, L. (2026).** *Geodetic & Elevation Data Toolkit v5.0.0* (V1) [Software dataset]. Recherche Data Gouv. https://doi.org/10.57745/1O0YRE
+
+**BibTeX (as provided by Recherche Data Gouv):**
 
 ```bibtex
-@software{koa_geodetic_elevation_toolkit_2026,
-  author  = {Koa, Islam and Recking, Alain and Borgniet, Laurent},
-  title   = {Geodetic & Elevation Data Toolkit},
-  year    = {2026},
-  version = {5.0.0},
-  url     = {https://github.com/IslamKOA/geodetic-elevation-data-toolkit},
-  note    = {Geoid and vertical datum transformations, DEM acquisition and GPS time conversion}
+@data{1O0YRE_2026,
+  author = {KOA, Islam and Recking, Alain and Borgniet, Laurent},
+  publisher = {Recherche Data Gouv},
+  title = {{Geodetic & Elevation Data Toolkit v5.0.0}},
+  year = {2026},
+  version = {V1},
+  doi = {10.57745/1O0YRE},
+  url = {https://doi.org/10.57745/1O0YRE}
 }
 ```
 
-GitHub also displays **“Cite this repository”**, generated from [CITATION.cff](CITATION.cff). **A DOI has not yet been assigned.** If an archival DOI is registered later, the citation can be updated to include it. Cite the version actually used and, where appropriate, separately cite the original geodetic and elevation datasets.
+**Published record:** [Recherche Data Gouv](https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/1O0YRE) · **Source code:** [GitHub](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · **Release:** [v5.0.0](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/releases/tag/v5.0.0).
+
+GitHub's **“Cite this repository”** feature reads [CITATION.cff](CITATION.cff), which now includes the DOI. Cite the version actually used and separately cite underlying geodetic or elevation datasets where appropriate.
 
 ---
 
