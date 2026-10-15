@@ -76,13 +76,13 @@ The GPS Time panel is useful when reviewing **GPS-time attributes extracted from
 
 If you use the toolkit for geoid modelling, DEM processing, coordinate conversion, or LiDAR/GNSS time interpretation in a publication, thesis, report, or project, please cite:
 
-> **Koa, I. (2026).** *Geodetic & Elevation Data Toolkit* (Version 5.0.0) [Computer software]. GitHub. https://github.com/IslamKOA/geodetic-elevation-data-toolkit
+> **Koa, I., Recking, A., & Borgniet, L. (2026).** *Geodetic & Elevation Data Toolkit* (Version 5.0.0) [Computer software]. GitHub. https://github.com/IslamKOA/geodetic-elevation-data-toolkit
 
 **BibTeX:**
 
 ```bibtex
 @software{koa_geodetic_elevation_toolkit_2026,
-  author  = {Koa, Islam},
+  author  = {Koa, Islam and Recking, Alain and Borgniet, Laurent},
   title   = {Geodetic & Elevation Data Toolkit},
   year    = {2026},
   version = {5.0.0},
