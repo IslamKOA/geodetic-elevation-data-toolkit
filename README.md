@@ -20,6 +20,8 @@
 
 **Discover ElevDatum:** Developed by **Islam KOA (IslamKOA)**, this open-source Python geodesy and geospatial toolkit covers vertical datum transformation, geoid and quasigeoid separation (RAF20, EGM96, EGM2008), ellipsoidal and physical elevation conversion, digital elevation models (DEM/DSM), IGN LiDAR HD, and Copernicus/SRTM elevation data. [Developer profile](https://github.com/IslamKOA) · [Citable archive](https://doi.org/10.57745/1O0YRE).
 
+**Community and reproducibility:** [Report an issue](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/issues) · [Contributing guidelines](CONTRIBUTING.md) · [How to cite this software](CITATION.cff)
+
 ## What can this toolkit do?
 
 The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a newly downloaded DEM** to geoid/quasigeoid modelling and height-reference conversion. Users can obtain a model separation grid, transform elevations between compatible vertical references, or retrieve a reference DEM and optionally convert its heights.
