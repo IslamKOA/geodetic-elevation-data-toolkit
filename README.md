@@ -1,4 +1,8 @@
-# Geodetic & Elevation Data Toolkit
+# ElevDatum
+
+<a href="assets/ElevDatum-ED-logo.jpg"><img src="assets/ElevDatum-ED-logo.jpg" alt="ElevDatum ED geodetic and elevation software logo" align="right" width="145"></a>
+
+**Geodetic & Elevation Data Toolkit** — user-facing brand: **ElevDatum**. The current scientific software release and citable archive remain **v5.0.0** under the original published title.
 
 **Geoid and vertical datum transformations · DEM acquisition · Survey coordinates · GPS time**
 
@@ -55,6 +59,15 @@ The installer detects **Conda or Micromamba**, downloads and extracts the offici
 2. **For every later use:** find the **Geodetic Elevation Toolkit** shortcut on your **Windows Desktop** and **double-click it**. You do not need to open PowerShell, activate Conda/Micromamba, or navigate to the source folder.
 3. Keep the server/terminal window open while working in the browser. Closing it stops the local processing server.
 4. If the browser does not open automatically, wait until the server starts, then manually visit **http://127.0.0.1:8765/**. If it still fails, read the error in the server window.
+
+**Official ElevDatum desktop icon:** The installer refreshes the existing Windows shortcut with the new ED globe/terrain icon from this repository. This affects the shortcut artwork only; Python, Micromamba/Conda environments, installed software files, DEM outputs and geodetic calculations are not modified. Existing installations can apply the icon independently:
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/SET_ELEVDATUM_ICON.ps1" -OutFile "$HOME\Downloads\SET_ELEVDATUM_ICON.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\Downloads\SET_ELEVDATUM_ICON.ps1"
+```
+
+The helper requires the installed **Geodetic Elevation Toolkit** Desktop shortcut. The legacy shortcut filename, local workspace and installation directory stay unchanged. The artwork is also linked at the top of this README. The stable v5.0.0 archive itself is immutable; its original source release was not republished with this branding.
 
 The automatic installer also keeps a launcher in `%LOCALAPPDATA%\\GeodeticElevationToolkit\\Launch Geodetic Toolkit.cmd` in case the Desktop shortcut is unavailable.
 

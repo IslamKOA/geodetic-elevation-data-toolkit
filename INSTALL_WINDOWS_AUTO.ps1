@@ -101,6 +101,29 @@ $link.TargetPath = $launcher
 $link.WorkingDirectory = $folder
 $link.Description = "Start Geodetic and Elevation Data Toolkit v5.0.0"
 $link.Save()
+# Apply the current ED branding independently of the pinned v5.0.0 source ZIP.
+# This only changes the shortcut icon, and cannot abort an otherwise valid installation.
+try {
+  $iconUpdater = Join-Path $base "SET_ELEVDATUM_ICON.ps1"
+  $iconDownloaded = $false
+  foreach ($url in @(
+      "https://raw.githubusercontent.com/IslamKOA/elevdatum/main/SET_ELEVDATUM_ICON.ps1",
+      "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/SET_ELEVDATUM_ICON.ps1")) {
+    try {
+      Invoke-WebRequest -Uri $url -OutFile $iconUpdater -UseBasicParsing -ErrorAction Stop
+      $iconDownloaded = $true
+      break
+    } catch { }
+  }
+  if ($iconDownloaded) {
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $iconUpdater -ShortcutPath $shortcut
+    if ($LASTEXITCODE -ne 0) { Write-Warning "ED shortcut icon update was unsuccessful; the normal Desktop launcher remains valid." }
+  } else {
+    Write-Warning "Unable to download the ED shortcut icon updater. The normal launcher remains valid."
+  }
+} catch {
+  Write-Warning ("Non-critical ED icon update: " + $_.Exception.Message)
+}
 Write-Host "Installation complete. Desktop shortcut: $shortcut" -ForegroundColor Green
 Write-Host "Double-click this shortcut to open the toolkit in your browser after the local server starts."
 Start-Process -FilePath $launcher

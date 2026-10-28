@@ -1,3 +1,11 @@
+## Unreleased — ElevDatum ED visual identity and desktop shortcut
+
+- Added the approved ED/Earth/DEM concept as the official ElevDatum logo; the public README uses a small right-aligned thumbnail.
+- Added a standalone `SET_ELEVDATUM_ICON.ps1` to apply the branded icon to an existing Windows Desktop shortcut without changing the launcher target, its environment, source files or scientific processing.
+- The existing Windows installer now retrieves the icon helper from the current branch after creating its shortcut; this works with the pinned stable v5.0.0 download and does not modify the historical release tag.
+- Documentation explains the new visible ElevDatum brand while retaining the original v5.0.0 research-software DOI and published citation title.
+- The repository renaming to `elevdatum` is a separate GitHub Settings operation; the updater recognizes both the intended new and existing repository addresses.
+
 ## v5.0.0 — 2026-10-12
 - Full user-guide audit and rewrite covering every interface panel, inputs, outputs, installation, limitations, and troubleshooting.
 - Updated version identifiers to 5.0.0 and kept CeCILL-B attribution and program calculations unchanged.
