@@ -206,13 +206,19 @@ echo Server stopped. Inspect any error above.
 pause
 "@
 Set-Content -LiteralPath $launcher -Value $contents -Encoding ASCII
-$desktop = [Environment]::GetFolderPath("Desktop")
-$shortcut = Join-Path $desktop "Geodetic Elevation Toolkit.lnk"
+$desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
+$legacyShortcut = Join-Path $desktop "Geodetic Elevation Toolkit.lnk"
+$shortcut = Join-Path $desktop "ElevDatum.lnk"
+# Migrate the original shortcut name instead of leaving duplicate launchers.
+if ((Test-Path -LiteralPath $legacyShortcut -PathType Leaf) -and
+    -not (Test-Path -LiteralPath $shortcut -PathType Leaf)) {
+  Move-Item -LiteralPath $legacyShortcut -Destination $shortcut
+}
 $wsh = New-Object -ComObject WScript.Shell
 $link = $wsh.CreateShortcut($shortcut)
 $link.TargetPath = $launcher
 $link.WorkingDirectory = $folder
-$link.Description = "Start Geodetic and Elevation Data Toolkit v5.0.0"
+$link.Description = "ElevDatum - Geodetic & Elevation Data Toolkit v5.0.0"
 $link.Save()
 # Apply the current ED branding independently of the pinned v5.0.0 source ZIP.
 # This only changes the shortcut icon, and cannot abort an otherwise valid installation.
