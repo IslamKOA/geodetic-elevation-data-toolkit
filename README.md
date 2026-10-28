@@ -16,6 +16,8 @@
 
 **Reproducibility:** [Run the scientific smoke test](release_smoke_test.py). The local installation is the full software edition; the [hosted website](https://geodetic-elevation-toolkit-preview.onrender.com) is a limited demonstration.
 
+**Quick links:** [Automatic Windows install](#install-locally-windows) · [v5.0.0 release](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/releases/tag/v5.0.0) · [Research software DOI](https://doi.org/10.57745/1O0YRE) · [Related satellite photogrammetry software: WASA-DEM](https://github.com/IslamKOA/pleiades-asp-workflow)
+
 ## What can this toolkit do?
 
 The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a newly downloaded DEM** to geoid/quasigeoid modelling and height-reference conversion. Users can obtain a model separation grid, transform elevations between compatible vertical references, or retrieve a reference DEM and optionally convert its heights.
