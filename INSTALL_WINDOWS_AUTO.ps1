@@ -220,6 +220,16 @@ $link.TargetPath = $launcher
 $link.WorkingDirectory = $folder
 $link.Description = "ElevDatum - Geodetic & Elevation Data Toolkit v5.0.0"
 $link.Save()
+# If both names exist from earlier installations, discard the old shortcut
+# only when it points to the same launcher. Never remove unrelated shortcuts.
+if (Test-Path -LiteralPath $legacyShortcut -PathType Leaf) {
+  $oldLink = $wsh.CreateShortcut($legacyShortcut)
+  if ($oldLink.TargetPath -ieq $link.TargetPath -and $oldLink.Arguments -eq $link.Arguments) {
+    Remove-Item -LiteralPath $legacyShortcut -Force
+  } else {
+    Write-Warning "The old Desktop shortcut has different launch settings; preserving it."
+  }
+}
 # Apply the current ED branding independently of the pinned v5.0.0 source ZIP.
 # This only changes the shortcut icon, and cannot abort an otherwise valid installation.
 try {
