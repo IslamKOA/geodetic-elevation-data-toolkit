@@ -13,7 +13,9 @@ if (-not $IsWindows -and $PSVersionTable.PSEdition -eq 'Core' -and $env:OS -ne '
 }
 if (-not $ShortcutPath) {
     $desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::DesktopDirectory)
-    $ShortcutPath = Join-Path $desktop 'Geodetic Elevation Toolkit.lnk'
+    $newShortcut = Join-Path $desktop 'ElevDatum.lnk'
+    $legacyShortcut = Join-Path $desktop 'Geodetic Elevation Toolkit.lnk'
+    $ShortcutPath = if (Test-Path -LiteralPath $newShortcut -PathType Leaf) { $newShortcut } else { $legacyShortcut }
 }
 if (-not (Test-Path -LiteralPath $ShortcutPath -PathType Leaf)) {
     throw "Existing toolkit shortcut not found: $ShortcutPath. Install the toolkit first."
@@ -103,11 +105,18 @@ try {
     } finally { $writer.Dispose() }
 } finally { $stream.Dispose() }
 
-# Preserve the shortcut's TargetPath, arguments, working directory and name.
+# Preserve the shortcut's TargetPath, arguments and working directory.
 $shell = New-Object -ComObject WScript.Shell
 $link = $shell.CreateShortcut($ShortcutPath)
 $link.IconLocation = "$iconFile,0"
 $link.Save()
+# Rename the old Desktop shortcut while keeping its existing target and arguments.
+$destination = Join-Path ([IO.Path]::GetDirectoryName($ShortcutPath)) 'ElevDatum.lnk'
+if ([IO.Path]::GetFileName($ShortcutPath) -ieq 'Geodetic Elevation Toolkit.lnk' -and
+    -not (Test-Path -LiteralPath $destination -PathType Leaf)) {
+    Move-Item -LiteralPath $ShortcutPath -Destination $destination
+    $ShortcutPath = $destination
+}
 try {
     Add-Type -TypeDefinition @'
 using System;

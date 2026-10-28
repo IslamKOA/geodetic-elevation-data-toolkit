@@ -1,3 +1,11 @@
+## Unreleased — ElevDatum desktop shortcut naming and installation documentation
+
+- Changed the automatic Windows installer to create the Desktop shortcut as **ElevDatum** (`ElevDatum.lnk`) while preserving the existing command launcher, geospatial Python environment, data paths and v5.0.0 scientific code.
+- Standalone ED icon refresh now renames the prior `Geodetic Elevation Toolkit.lnk` shortcut when no conflicting `ElevDatum.lnk` exists. The full installer also removes a redundant legacy shortcut only if it targets the same launcher.
+- Audited the README against the Windows and Linux/macOS scripts: one-command first-time installs, automatic Micromamba bootstrapping, icon-only refresh, and honest distinction between rerunning an installer and updating immutable scientific source code.
+- Corrected the Linux/macOS ZIP installation for systems where the temporary directory and home folder reside on different filesystems.
+- Retained the published DOI and `v5.0.0` source archive without altering numerical processing.
+
 ## Unreleased — No-prerequisite ElevDatum installation (Windows, Linux and macOS)
 
 - Windows `INSTALL_WINDOWS_AUTO.ps1` now works without preinstalled Conda, Micromamba, Mamba, Python or Git: it discovers existing managers even when not on PATH and, if needed, downloads the official standalone Micromamba executable directly into the user's local application directory.
