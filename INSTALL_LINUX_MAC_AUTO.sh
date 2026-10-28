@@ -130,7 +130,7 @@ if [[ ! -f "$ENTRY" ]]; then
   say "Downloading the stable ElevDatum v5.0.0 ZIP (no Git needed)."
   download "$SOURCE_URL" "$tmp/source.zip"
   cat > "$tmp/extract.py" <<'PY'
-import os, pathlib, sys, zipfile
+import pathlib, shutil, sys, zipfile
 archive, dest = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 unpack = archive.parent / "extracted"
 with zipfile.ZipFile(archive) as z:
@@ -138,7 +138,7 @@ with zipfile.ZipFile(archive) as z:
 roots = [p for p in unpack.iterdir() if p.is_dir() and (p / "geoid_web.py").is_file()]
 if len(roots) != 1 or dest.exists():
     raise SystemExit("Unexpected source ZIP or existing target directory.")
-os.rename(roots[0], dest)
+shutil.move(str(roots[0]), str(dest))
 PY
   "$selected" run -n "$ENV_NAME" python "$tmp/extract.py" "$tmp/source.zip" "$FOLDER"
 fi
