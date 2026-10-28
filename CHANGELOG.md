@@ -1,3 +1,11 @@
+## Unreleased — No-prerequisite ElevDatum installation (Windows, Linux and macOS)
+
+- Windows `INSTALL_WINDOWS_AUTO.ps1` now works without preinstalled Conda, Micromamba, Mamba, Python or Git: it discovers existing managers even when not on PATH and, if needed, downloads the official standalone Micromamba executable directly into the user's local application directory.
+- The installer creates a dedicated `geoid_tool` environment with Python 3.12 and geospatial dependencies only if missing, verifies the real managed Python and packages, reuses healthy environments, and leaves broken existing environments untouched rather than silently overwriting them.
+- Added `INSTALL_LINUX_MAC_AUTO.sh` to bootstrap Micromamba and Python and install the same published v5.0.0 software from a ZIP on Linux and macOS without a preinstalled environment or Git.
+- Kept the scientific source pinned to the original v5.0.0 release, preserved original launch paths and project data, and retained the separate automatic ElevDatum ED desktop icon updater on Windows.
+- Updated README and manual guides to recommend the one-command installers and explain optional manual alternatives.
+
 ## Unreleased — ElevDatum ED visual identity and desktop shortcut
 
 - Added the approved ED/Earth/DEM concept as the official ElevDatum logo; the public README uses a small right-aligned thumbnail.

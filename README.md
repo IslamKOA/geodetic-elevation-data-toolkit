@@ -41,7 +41,7 @@ The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevati
 
 ### Install locally (Windows)
 
-**Option A — Automatic installation (recommended if Conda or Micromamba is already installed)**
+**Option A — Fully automatic Windows installation (recommended for all users)**
 
 Open PowerShell and run this **single command**. Review the [installer source](INSTALL_WINDOWS_AUTO.ps1) first, because it downloads and runs a PowerShell script from this repository:
 
@@ -49,7 +49,7 @@ Open PowerShell and run this **single command**. Review the [installer source](I
 irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex
 ```
 
-The installer detects **Conda or Micromamba**, downloads and extracts the official **v5.0.0** source into `%LOCALAPPDATA%\\GeodeticElevationToolkit`, creates or reuses a `geoid_tool` environment, validates Python dependencies, and generates **Launch Geodetic Toolkit.cmd**. It does not require a manual source ZIP download or a particular working directory. It will not delete an existing installation.
+The installer works on **fresh Windows 10/11 computers without Git, Python, Anaconda, Conda, Mamba or Micromamba**. It first searches for a working existing environment manager, including common directories outside `PATH`. If none is available, it **downloads the official standalone Micromamba automatically** into your user account, then creates an isolated `geoid_tool` environment with Python 3.12 and the required geospatial libraries. It downloads the **published v5.0.0 source ZIP** into `%LOCALAPPDATA%\\GeodeticElevationToolkit` and creates the desktop shortcut with the ED icon. A working existing environment and any project data are preserved; no global Python installation or Git checkout is required. Only an internet connection and standard Windows PowerShell are needed.
 
 **Already installed but the Desktop shortcut says `'conda' is not recognized`?** Re-run the same one-line installer in PowerShell to repair the shortcut. The updated launcher uses the full Python path inside `geoid_tool`, so it no longer needs the `conda` command in the Desktop terminal. Existing software files and working environments are preserved.
 
@@ -71,15 +71,30 @@ The helper requires the installed **Geodetic Elevation Toolkit** Desktop shortcu
 
 The automatic installer also keeps a launcher in `%LOCALAPPDATA%\\GeodeticElevationToolkit\\Launch Geodetic Toolkit.cmd` in case the Desktop shortcut is unavailable.
 
-**If neither Conda nor Micromamba is installed**, first follow the [Micromamba setup guide](INSTALL_WINDOWS_MICROMAMBA.md) (no separate Python installation required), then run the command above.
+**No Conda or Micromamba installed?** Run the **same automatic command** above. Micromamba and Python are installed as needed, with no separate manual setup. The [Micromamba guide](INSTALL_WINDOWS_MICROMAMBA.md) is optional for advanced users who prefer managing environments themselves.
 
-**Option B — Manual setup**
+**Option B — Manual setup (optional)**
 
 For users who prefer not to execute a downloaded installer script, see [Windows installation with Conda or Micromamba](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md). Both managers support the toolkit; choose whichever is already installed. The steps include protection against user-profile NumPy/SciPy conflicts.
 
 The full local application starts at **http://127.0.0.1:8765/**. Keep the server terminal open while using it. The HTML file alone does not perform scientific processing.
 
-For Linux/macOS, see [Installation and launch](#installation-and-launch) below.
+For Linux/macOS, use the [automatic installation](#automatic-linux-and-macos-installation) below. Manual setup remains available under [Installation and launch](#installation-and-launch).
+
+### Automatic Linux and macOS installation
+
+The recommended installer works on **Linux and macOS** without an existing Git checkout, Python interpreter, Conda, Mamba or Micromamba. Open Terminal and run:
+
+```bash
+curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh -o INSTALL_LINUX_MAC_AUTO.sh
+bash INSTALL_LINUX_MAC_AUTO.sh
+```
+
+If `curl` is unavailable, use `wget -O INSTALL_LINUX_MAC_AUTO.sh <URL>` with the URL above, then run `bash INSTALL_LINUX_MAC_AUTO.sh`. The installer discovers and reuses an existing compatible `geoid_tool` environment where possible. Otherwise it installs standalone Micromamba under your account, creates Python 3.12 and the required geospatial dependencies, downloads the **immutable v5.0.0 source ZIP**, and starts the local app at **http://127.0.0.1:8765/**.
+
+**Requirements:** Internet access, Bash, and `curl` or `wget`; the system `tar` utility with bzip2 support is needed only when bootstrapping Micromamba. No `sudo` is needed for the scientific environment. The install lives at `~/.local/share/ElevDatum/v5.0.0` by default; existing project folders are not deleted or overwritten. For advanced Linux/macOS users, the manual Python launch method remains documented below.
+
+**Update / reinstall:** Download the latest `INSTALL_LINUX_MAC_AUTO.sh` and rerun it; it reuses existing working installations rather than reinstalling dependencies. To launch the saved source manually, activate `geoid_tool` and run `python ~/.local/share/ElevDatum/v5.0.0/geoid_web.py`.
 
 ### LiDAR GPS time: interpreting acquisition timestamps
 

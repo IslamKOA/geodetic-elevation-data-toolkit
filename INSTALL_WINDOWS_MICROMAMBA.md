@@ -1,5 +1,12 @@
 # Windows installation from scratch — Micromamba
 
+> **Recommended for first-time users:** You do **not** need to install Micromamba or Python manually. Open Windows PowerShell and run the [automatic ElevDatum installer](INSTALL_WINDOWS_AUTO.ps1):
+>
+> `irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex`
+>
+> It detects existing Conda/Mamba/Micromamba, installs standalone Micromamba and Python 3.12 if needed, downloads the published v5.0.0 source, and creates a Windows desktop shortcut. The instructions below are **optional manual instructions**.
+
+
 This guide is for users who **do not have Conda, Miniconda, Micromamba or Python installed**. Micromamba manages Python and the compiled geospatial libraries; you do **not** need to separately install Python.
 
 ## 1. Download the software

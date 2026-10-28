@@ -1,5 +1,12 @@
 # Windows installation — Conda or Micromamba (v5.0.0)
 
+> **Automatic installation recommended:** If you do not have Git, Python, Conda or Micromamba, use the [automatic Windows installer](INSTALL_WINDOWS_AUTO.ps1). It bootstraps standalone Micromamba and Python automatically, without modifying unrelated environments. Open PowerShell:
+>
+> `irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex`
+>
+> The instructions below are an **optional manual alternative** for advanced users.
+
+
 **Choose ONE environment manager.** If you already have Miniconda/Anaconda, use **Conda**. If you already have Micromamba, use **Micromamba**. They install the same scientific Python libraries; no need to install both. If you have neither, follow the [Micromamba installation instructions](INSTALL_WINDOWS_MICROMAMBA.md) first.
 
 ## 1. Download the application
