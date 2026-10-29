@@ -193,7 +193,7 @@ if (-not $updatedHtml.Contains('<h1>ElevDatum</h1>') -or
 }
 if ($updatedHtml -cne $originalHtml) {
   [System.IO.File]::WriteAllText(
-    $uiFile, $updatedHtml, (New-Object System.Text.UTF8Encoding($false))
+    $uiFile, $updatedHtml, [System.Text.UTF8Encoding]::new($false)
   )
   Write-Host "ElevDatum interface branding refreshed (scientific release v5.0.0)." -ForegroundColor Green
 }
@@ -228,7 +228,7 @@ set "PYTHONPATH="
 cd /d "$folder"
 set "PATH=$envPrefix\Library\bin;$envPrefix\Scripts;$envPrefix;%PATH%"
 set "CONDA_PREFIX=$envPrefix"
-echo Starting Geodetic and Elevation Data Toolkit...
+echo Starting ElevDatum...
 start "" powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$waitScript"
 "$pythonExe" geoid_web.py --no-browser
 echo.
