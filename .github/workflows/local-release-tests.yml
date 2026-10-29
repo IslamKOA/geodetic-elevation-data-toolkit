@@ -32,5 +32,7 @@ jobs:
           }
       - name: Compile Python code
         run: python -m py_compile geoid_web.py geoid_engine.py vertical_reference.py global_dem_downloader.py ign_lidarhd_downloader.py
+      - name: Check ElevDatum UI branding and launch behavior
+        run: python -m unittest discover -s tests -p 'test_elevdatum_ui_branding.py'
       - name: Test original RAF20 engine
         run: python release_smoke_test.py
