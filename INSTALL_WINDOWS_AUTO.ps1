@@ -169,6 +169,36 @@ if (-not (Test-Path -LiteralPath $entry -PathType Leaf)) {
 }
 Write-Host "ElevDatum scientific source: $folder" -ForegroundColor Green
 
+# Refresh presentation-only ElevDatum branding on the pinned scientific release.
+# Does not update the v5.0.0 calculation code, release archive, or DOI.
+$uiFile = Join-Path $folder "geoid_interface.html"
+if (-not (Test-Path -LiteralPath $uiFile -PathType Leaf)) { throw "ElevDatum interface missing: $uiFile" }
+$originalHtml = [System.IO.File]::ReadAllText($uiFile, [System.Text.Encoding]::UTF8)
+$updatedHtml = $originalHtml.Replace(
+  '<title>Geodetic & Elevation Data Toolkit</title>',
+  '<title>ElevDatum | Geodetic & Elevation Data Toolkit</title>'
+).Replace(
+  '<h1>Geodetic &amp; Elevation Data Toolkit</h1>',
+  '<h1>ElevDatum</h1>'
+)
+$updatedHtml = [regex]::Replace(
+  $updatedHtml,
+  '(<div class="eyebrow">Research software[^<]*?v)2\.4(</div>)',
+  '${1}5.0.0${2}'
+)
+if (-not $updatedHtml.Contains('<h1>ElevDatum</h1>') -or
+    -not $updatedHtml.Contains('<title>ElevDatum | Geodetic & Elevation Data Toolkit</title>') -or
+    -not $updatedHtml.Contains('v5.0.0</div>')) {
+  throw "The installed HTML was not recognized; refusing to apply an incomplete interface branding patch."
+}
+if ($updatedHtml -cne $originalHtml) {
+  [System.IO.File]::WriteAllText(
+    $uiFile, $updatedHtml, [System.Text.UTF8Encoding]::new($false)
+  )
+  Write-Host "ElevDatum interface branding refreshed (scientific release v5.0.0)." -ForegroundColor Green
+}
+
+
 $waitScript = Join-Path $base "Open Toolkit When Ready.ps1"
 $waitContent = @'
 $deadline = (Get-Date).AddSeconds(120)
@@ -198,9 +228,9 @@ set "PYTHONPATH="
 cd /d "$folder"
 set "PATH=$envPrefix\Library\bin;$envPrefix\Scripts;$envPrefix;%PATH%"
 set "CONDA_PREFIX=$envPrefix"
-echo Starting Geodetic and Elevation Data Toolkit...
+echo Starting ElevDatum...
 start "" powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$waitScript"
-"$pythonExe" geoid_web.py
+"$pythonExe" geoid_web.py --no-browser
 echo.
 echo Server stopped. Inspect any error above.
 pause
