@@ -102,6 +102,8 @@ If the command is not found, use `~/.local/bin/elevdatum`. The installer creates
 
 **After launching:** Keep the terminal/server running. Your default browser should open automatically on graphical systems. **If it does not**, open a browser and paste **http://127.0.0.1:8765/** into its address bar. The URL works only on the same computer while the server is running. On headless or SSH systems, a browser on another computer needs a suitable SSH port forward; the local URL alone will not connect remotely.
 
+**Using ElevDatum on a remote Linux server (SSH):** Run `~/.local/bin/elevdatum --no-browser` on the server. On your Windows computer, open a separate PowerShell window and run `ssh -N -L 8765:127.0.0.1:8765 koai@ige-calcul4.u-ga.fr` (replace the SSH hostname/user for your own server). Then open **http://127.0.0.1:8765/** in your Windows browser. Keep both the server process and SSH tunnel running. Never expose the ElevDatum processing server directly to the public internet.
+
 ### Linux and macOS — Update or repair
 
 Close ElevDatum, then open **Terminal** and run:
