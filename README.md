@@ -82,7 +82,13 @@ bash INSTALL_LINUX_MAC_AUTO.sh
 
 The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and starts the local application at **http://127.0.0.1:8765/**.
 
-**To open ElevDatum later:** On Linux desktops, use the **ElevDatum** application-menu entry or Desktop shortcut (if created). On macOS or headless systems, activate `geoid_tool` and run `python ~/.local/share/ElevDatum/v5.0.0/geoid_web.py`. Keep the server running while using the browser.
+**To open ElevDatum later (Linux/macOS):** Open a terminal and run:
+
+```bash
+elevdatum
+```
+
+The installer creates this terminal command at `~/.local/bin/elevdatum`. If your shell does not find `elevdatum`, run `~/.local/bin/elevdatum` directly, or add `~/.local/bin` to your `PATH`. On Linux graphical desktops you can also use the **ElevDatum** application-menu entry or Desktop shortcut. Keep the terminal open while using the browser at **http://127.0.0.1:8765/**.
 
 ### Linux and macOS — Update or repair
 
