@@ -17,10 +17,13 @@ class ElevDatumBrandingTests(unittest.TestCase):
         self.assertIn("Research software · v5.0.0", html)
         self.assertNotIn("Research software · v2.4", html)
 
-    def test_windows_installer_keeps_published_release_and_one_browser_open(self):
+    def test_windows_installer_uses_server_browser_launch(self):
         installer = (ROOT / "INSTALL_WINDOWS_AUTO.ps1").read_text(encoding="utf-8")
         self.assertIn('$release = "v5.0.0"', installer)
-        self.assertIn('geoid_web.py --no-browser', installer)
+        self.assertIn('"$pythonExe" geoid_web.py', installer)
+        self.assertNotIn('geoid_web.py --no-browser', installer)
+        self.assertIn('GDAL_DATA=', installer)
+        self.assertNotIn('Open Toolkit When Ready.ps1', installer)
         self.assertIn('Research software[^<]*?v', installer)
         self.assertIn("v5.0.0</div>", installer)
 
