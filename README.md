@@ -71,22 +71,26 @@ This reuses a healthy `geoid_tool` environment and refreshes the installer-gener
 
 For advanced users: [Manual Windows installation](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md) · [Micromamba instructions](INSTALL_WINDOWS_MICROMAMBA.md) · [Windows installer source](INSTALL_WINDOWS_AUTO.ps1).
 
-### Automatic Linux and macOS installation
+### Linux and macOS — Install
 
-The recommended installer works on **Linux and macOS** without an existing Git checkout, Python interpreter, Conda, Mamba or Micromamba. Open Terminal and run:
+Open **Terminal** and run:
 
 ```bash
 curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh -o INSTALL_LINUX_MAC_AUTO.sh
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-If `curl` is unavailable, run `wget -O INSTALL_LINUX_MAC_AUTO.sh https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh` and then `bash INSTALL_LINUX_MAC_AUTO.sh`. The installer discovers and reuses an existing compatible `geoid_tool` environment where possible. Otherwise it installs standalone Micromamba under your account, creates Python 3.12 and the required geospatial dependencies, downloads the **immutable v5.0.0 source ZIP**, and starts the local app at **http://127.0.0.1:8765/**.
+The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs **ElevDatum v5.0.0** and starts the local application at **http://127.0.0.1:8765/**.
 
-**Linux graphical desktop:** The automatic installer also creates an **ElevDatum** application-menu entry and, where a Desktop directory exists, an **ElevDatum.desktop** shortcut with the official logo. Double-clicking it launches the local Python server and opens the browser. Some GNOME desktops require right-click → **Allow Launching** before first use. This is optional and skipped in headless/SSH sessions; **no dedicated GPU is required**. macOS does not use `.desktop` files.
+**To open ElevDatum later:** On Linux desktops, use the **ElevDatum** application-menu entry or Desktop shortcut (if created). On macOS or headless systems, activate `geoid_tool` and run `python ~/.local/share/ElevDatum/v5.0.0/geoid_web.py`. Keep the server running while using the browser.
 
-**Requirements:** Internet access, Bash, and `curl` or `wget`; the system `tar` utility with bzip2 support is needed only when bootstrapping Micromamba. No `sudo` is needed for the scientific environment. The install lives at `~/.local/share/ElevDatum/v5.0.0` by default; existing project folders are not deleted or overwritten. For advanced Linux/macOS users, the manual Python launch method remains documented below.
+### Linux and macOS — Update or repair
 
-**Refresh / rerun setup:** Re-download the current `INSTALL_LINUX_MAC_AUTO.sh` and run it again after stopping the local server. It reuses healthy environments and the installed v5.0.0 source rather than upgrading scientific code. To launch the saved source manually, activate `geoid_tool` and run `python ~/.local/share/ElevDatum/v5.0.0/geoid_web.py`. Linux/macOS do not receive a Windows Desktop `.lnk` shortcut.
+Close ElevDatum and run **the same two Terminal commands** above. They re-download the installer and reuse a healthy environment and the existing installation.
+
+**Important:** Like the Windows installer, this refreshes the setup but **does not upgrade the scientific application code beyond v5.0.0**. A newer scientific version requires a published release and an updated installer.
+
+If `curl` is unavailable, use `wget` instead. Linux graphical shortcuts may require **Allow Launching**. For advanced setup options, see [the installer script](INSTALL_LINUX_MAC_AUTO.sh) and [manual installation instructions](#installation-and-launch).
 
 ### LiDAR GPS time: interpreting acquisition timestamps
 
