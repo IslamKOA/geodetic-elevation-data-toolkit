@@ -35,7 +35,6 @@ if ($ImagePath) {
         Copy-Item -LiteralPath $bundled -Destination $localImage -Force
     } else {
         $urls = @(
-            'https://raw.githubusercontent.com/IslamKOA/elevdatum/main/assets/ElevDatum-ED-logo.jpg',
             'https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/assets/ElevDatum-ED-logo.jpg'
         )
         $received = $false
