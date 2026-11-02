@@ -124,24 +124,19 @@ PY
 "$selected" run -n "$ENV_NAME" python "$tmp/verify.py" \
   || fail "Python dependency check failed. Existing environments have not been modified."
 
-# Only download the published, immutable v5.0.0 source when not already installed.
-if [[ ! -f "$ENTRY" ]]; then
-  [[ ! -e "$FOLDER" ]] || fail "Incomplete existing directory $FOLDER; not overwriting user files."
-  say "Downloading the stable ElevDatum v5.0.0 ZIP (no Git needed)."
-  download "$SOURCE_URL" "$tmp/source.zip"
-  cat > "$tmp/extract.py" <<'PY'
-import pathlib, shutil, sys, zipfile
-archive, dest = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-unpack = archive.parent / "extracted"
-with zipfile.ZipFile(archive) as z:
-    z.extractall(unpack)
-roots = [p for p in unpack.iterdir() if p.is_dir() and (p / "geoid_web.py").is_file()]
-if len(roots) != 1 or dest.exists():
-    raise SystemExit("Unexpected source ZIP or existing target directory.")
-shutil.move(str(roots[0]), str(dest))
-PY
-  "$selected" run -n "$ENV_NAME" python "$tmp/extract.py" "$tmp/source.zip" "$FOLDER"
+# Every install/update refreshes source files from main (development snapshot).
+# Preserve extra user files and reuse the environment. Close the server first.
+if "$selected" run -n "$ENV_NAME" python -c 'import socket; s=socket.socket(); exit(0 if s.connect_ex(("127.0.0.1", 8765)) else 1)' ; then
+  :
+else
+  fail "Port 8765 is in use. Close ElevDatum before updating."
 fi
+say "Downloading current ElevDatum application files."
+download "https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip" "$tmp/source.zip"
+download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/elevdatum_update.py" "$tmp/elevdatum_update.py"
+"$selected" run -n "$ENV_NAME" python "$tmp/elevdatum_update.py" \
+  --archive "$tmp/source.zip" --target "$FOLDER" --source "main development snapshot" \
+  || fail "Failed to refresh source files; previous files restored where possible."
 
 # Optional Linux desktop integration. Skip on headless machines and macOS.
 if [[ "$(uname -s)" == "Linux" && ( -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ) ]]; then
