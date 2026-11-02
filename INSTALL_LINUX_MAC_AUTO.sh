@@ -133,6 +133,9 @@ while IFS= read -r candidate; do
 done < <(printf '%s' "$listing" | grep -oE '"[^"]+/geoid_tool"' || true)
 [[ -n "$python_path" && -x "$python_path" ]] || fail "Cannot locate geoid_tool Python from the selected environment manager."
 say "Using environment Python: $python_path"
+env_prefix="${python_path%/bin/python}"
+if [[ -f "$env_prefix/share/proj/proj.db" ]]; then export PROJ_DATA="$env_prefix/share/proj"; fi
+if [[ -f "$env_prefix/share/gdal/gdalvrt.xsd" ]]; then export GDAL_DATA="$env_prefix/share/gdal"; fi
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -166,7 +169,10 @@ download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-too
 bin_dir="$HOME/.local/bin"
 mkdir -p "$bin_dir"
 launcher="$bin_dir/elevdatum"
+# Configure PROJ/GDAL locations for direct Python invocation when available.
+env_prefix="${python_path%/bin/python}"
 printf -v python_q '%q' "$python_path"
+printf -v prefix_q '%q' "$env_prefix"
 
 printf -v entry_q '%q' "$ENTRY"
 
@@ -175,6 +181,9 @@ cat > "$launcher" <<EOF
 set -e
 export PYTHONNOUSERSITE=1
 unset PYTHONPATH
+env_prefix=$prefix_q
+if [[ -f "\$env_prefix/share/proj/proj.db" ]]; then export PROJ_DATA="\$env_prefix/share/proj"; fi
+if [[ -f "\$env_prefix/share/gdal/gdalvrt.xsd" ]]; then export GDAL_DATA="\$env_prefix/share/gdal"; fi
 exec $python_q $entry_q "\$@"
 EOF
 chmod 755 "$launcher"
@@ -228,9 +237,8 @@ EOF
 fi
 
 say "ElevDatum is installed at: $FOLDER"
-say "Opening: http://127.0.0.1:8765/"
-say "Later launch: $launcher (or simply elevdatum if ~/.local/bin is in PATH)"
-cd "$FOLDER"
-if [[ "${ELEVDATUM_NO_LAUNCH:-0}" != "1" ]]; then
-  "$launcher"
-fi
+say "Installation/update finished successfully."
+say "To start ElevDatum, run: $launcher"
+say "Or simply: elevdatum (if ~/.local/bin is in PATH)"
+say "Then open http://127.0.0.1:8765/ in a browser on the same machine."
+say "For SSH servers, forward port 8765 to your local computer."
