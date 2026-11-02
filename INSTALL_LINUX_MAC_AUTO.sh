@@ -105,14 +105,29 @@ say "Using $selected_type: $selected"
 listing="$("$selected" env list --json)" || fail "Unable to inspect managed environments."
 if ! printf '%s' "$listing" | grep -Fq "/$ENV_NAME\""; then
   say "Creating isolated Python 3.12 geospatial environment ($ENV_NAME)."
-  "$selected" create -y -n "$ENV_NAME" --override-channels -c conda-forge \
+  create_args=(create -y -n "$ENV_NAME" --override-channels -c conda-forge)
+  # Avoid incompatible conda-libmamba-solver / libmambapy on older Miniconda installs.
+  if [[ "$selected_type" == "conda" ]]; then
+    create_args+=(--solver classic)
+    export CONDA_NO_PLUGINS=true
+  fi
+  "$selected" "${create_args[@]}" \
     python=3.12 numpy scipy rasterio geopandas pyproj requests matplotlib pandas shapely affine
 else
   say "Reusing existing $ENV_NAME environment without changing dependencies."
 fi
 
-python_path="$("$selected" run -n "$ENV_NAME" python -c 'import sys; print(sys.executable)' 2>/dev/null | tail -n 1)" || fail "Unable to locate geoid_tool Python."
-[[ -x "$python_path" ]] || fail "geoid_tool Python executable not found: $python_path"
+# Find the environment interpreter without invoking 'conda run' or its solver plugins.
+python_path=""
+while IFS= read -r candidate; do
+  candidate="${candidate#\"}"
+  candidate="${candidate%\"}"
+  if [[ "$candidate" == */"$ENV_NAME" && -x "$candidate/bin/python" ]]; then
+    python_path="$candidate/bin/python"
+    break
+  fi
+done < <(printf '%s' "$listing" | grep -oE '"[^"]+/geoid_tool"' || true)
+[[ -n "$python_path" && -x "$python_path" ]] || fail "Cannot locate geoid_tool Python from the selected environment manager."
 say "Using environment Python: $python_path"
 
 tmp="$(mktemp -d)"
