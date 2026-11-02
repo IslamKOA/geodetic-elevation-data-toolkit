@@ -78,44 +78,38 @@ For advanced users: [Manual Windows installation](INSTALL_WINDOWS_CONDA_OR_MICRO
 
 ### Linux and macOS — Install
 
-Open **Terminal** and run:
+**Step 1 — Install:** Open a Linux/macOS terminal and run:
 
 ```bash
 curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh -o INSTALL_LINUX_MAC_AUTO.sh
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and creates the `elevdatum` terminal command. **The installer finishes and returns to the terminal; it does not start the web server.**
+The installer uses an existing Conda/Mamba installation or installs Micromamba if none is available. It creates/reuses the `geoid_tool` environment, installs/refreshes the application, and **returns to the terminal prompt**. It does not start the server. The code is the latest GitHub `main` development snapshot (not the immutable v5.0.0 DOI release).
 
-**How to open ElevDatum on Linux or macOS (after installation):**
+**Step 2 — Open ElevDatum (choose one):**
 
-- **Linux graphical desktop:** Double-click the **ElevDatum** Desktop shortcut, if one was created, or find **ElevDatum** in the application menu. Some Linux desktops require right-click → **Allow Launching** before using the shortcut.
-- **Linux or macOS terminal (also works without a Desktop shortcut):** Open Terminal and run:
+- **On the Linux desktop or macOS computer:** Double-click the **ElevDatum** desktop/application-menu shortcut (Linux, when available), or type `elevdatum` in Terminal. The browser normally opens automatically; otherwise visit **http://127.0.0.1:8765/** on that same computer.
+- **On a remote Linux server, viewed from Windows (e.g., `ige-calcul4`):**
+  1. **On Linux**, run `elevdatum --no-browser` and leave that terminal open.
+  2. **On Windows PowerShell**, run `ssh -N -L 8765:127.0.0.1:8765 koai@ige-calcul4.u-ga.fr` (substitute your SSH username/server), enter your password, and **leave PowerShell open**. No prompt after login is normal. Open **http://127.0.0.1:8765/** in the Windows browser. On later visits, the browser can open that same address automatically from a saved bookmark once the server and tunnel are running.
 
-```bash
-elevdatum
-```
-
-If the command is not found, use `~/.local/bin/elevdatum`. The installer creates this launcher without requiring manual Conda activation. If necessary, add `~/.local/bin` to your shell's `PATH`.
-
-**After running `elevdatum`:** The terminal displays **http://127.0.0.1:8765/** and stays open while the local server is active. This is normal and is separate from installation. Keep the terminal/server running. Your default browser should open automatically on graphical systems. **If it does not**, open a browser and paste **http://127.0.0.1:8765/** into its address bar. The URL works only on the same computer while the server is running. On headless or SSH systems, a browser on another computer needs a suitable SSH port forward; the local URL alone will not connect remotely.
-
-**Using ElevDatum on a remote Linux server (such as `ige-calcul4`):** After updating, launch with `elevdatum --network --no-browser`. The server will print a full URL like `http://ige-calcul4:8765/?token=...`; copy the **entire URL including the token** into a browser on a machine that can reach the server. Unlike local mode, `--network` listens on all interfaces and requires a fresh random token at launch, like a Jupyter tokenized URL. **Security:** This is plain HTTP; use only on a trusted institutional LAN/VPN with appropriate firewall restrictions, and never expose port 8765 publicly. If network access is blocked or encryption is needed, use the safer SSH method instead: start `elevdatum --no-browser`, and on Windows use `ssh -N -L 8765:127.0.0.1:8765 koai@ige-calcul4.u-ga.fr`, then browse to `http://127.0.0.1:8765/`. Keep the server and SSH tunnel running.
+If `elevdatum` is not found, use `~/.local/bin/elevdatum`. The server must remain running while you use the interface; stop it with **Ctrl+C**. On Linux, some desktop shortcuts require **Allow Launching**. **Do not use `--network` for ordinary remote-server access:** SSH forwarding avoids direct exposure of ElevDatum's file-processing interface. Opening the browser URL alone does not start the server or tunnel.
 
 ### Linux and macOS — Update or repair
 
-Close ElevDatum, then open **Terminal** and run:
+**Step 1 — Update:** Stop ElevDatum with **Ctrl+C**, then run the same two terminal commands:
 
 ```bash
 curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh -o INSTALL_LINUX_MAC_AUTO.sh
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-These are the same commands used for installation. They download the latest installer, refresh the application files, and reuse a healthy existing environment. **After updating, the installer exits without launching ElevDatum.** Type `elevdatum` when you want to open it.
+This refreshes Python files, notebooks, interface and other managed files from GitHub `main`, **reuses a healthy `geoid_tool` environment**, and preserves additional user-created files. Back up edits to distributed application files before updating. The installer exits when finished.
 
-**Like Windows, this refreshes all ElevDatum-managed files from GitHub `main`**, including Python files, notebooks and interface, while preserving additional user-created files. The refreshed code is a **development snapshot**, separate from the published, immutable v5.0.0 DOI release. Back up local edits to distributed files.
+**Step 2 — Open:** Use either of the two methods under **Step 2 — Open ElevDatum** above. No reinstall or manual Conda activation is needed.
 
-If `curl` is unavailable, use `wget` instead. Linux graphical shortcuts may require **Allow Launching**. For advanced setup options, see [the installer script](INSTALL_LINUX_MAC_AUTO.sh) and [manual installation instructions](#installation-and-launch).
+[Linux/macOS installer source](INSTALL_LINUX_MAC_AUTO.sh) · [Manual installation](#installation-and-launch).
 
 ### LiDAR GPS time: interpreting acquisition timestamps
 
