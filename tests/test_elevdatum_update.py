@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import pathlib
+import py_compile
 import tempfile
 import unittest
 import zipfile
@@ -50,7 +51,7 @@ class UpdateTests(unittest.TestCase):
             self.archive(archive, "working")
             module.update(archive, folder, "test")
             self.archive(archive, "invalid", {"broken.py": "def fails(:\n"})
-            with self.assertRaises(SyntaxError):
+            with self.assertRaises(py_compile.PyCompileError):
                 module.update(archive, folder, "test")
             self.assertIn("working", (folder / "geoid_web.py").read_text())
 
