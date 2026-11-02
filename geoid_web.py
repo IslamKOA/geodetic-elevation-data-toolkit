@@ -1,9 +1,9 @@
 """Local-only browser UI. Launch with python geoid_web.py."""
 from http.server import ThreadingHTTPServer,BaseHTTPRequestHandler
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import webbrowser,threading,json,shutil,csv,io,zipfile,uuid,traceback,os,sys,subprocess
+import webbrowser,threading,json,shutil,csv,io,zipfile,uuid,traceback,os,sys,subprocess,secrets,socket,hmac
 from email.parser import BytesParser
 from email.policy import default
 from geoid_engine import point_rows,points_n,aoi_process,raster_process
@@ -184,10 +184,32 @@ def create_previews(outputs, output_dir):
  return previews
 
 class Handler(BaseHTTPRequestHandler):
+ access_token = None
+ def authorize(self):
+  token=self.access_token
+  if token is None:return True
+  query=parse_qs(urlparse(self.path).query).get('token',[''])[0]
+  if query and hmac.compare_digest(query,token):
+   self.send_response(302)
+   self.send_header('Location',urlparse(self.path).path or '/')
+   self.send_header('Set-Cookie',f'elevdatum_session={token}; HttpOnly; SameSite=Strict; Path=/')
+   self.send_header('Cache-Control','no-store')
+   self.send_header('Content-Length','0')
+   self.end_headers()
+   return False
+  from http.cookies import SimpleCookie
+  try:
+   cookies=SimpleCookie();cookies.load(self.headers.get('Cookie',''))
+   supplied=cookies.get('elevdatum_session')
+   if supplied and hmac.compare_digest(supplied.value,token):return True
+  except Exception:pass
+  self.reply({'error':'Unauthorized: open the tokenized URL printed in your terminal'},401)
+  return False
  def reply(self,data,status=200,mime='application/json'):
   if isinstance(data,(dict,list)):data=json.dumps(data).encode()
   self.send_response(status);self.send_header('Content-Type',mime);self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
  def do_GET(self):
+  if not self.authorize():return
   p=urlparse(self.path).path
   if p=='/':return self.reply(HTML,mime='text/html; charset=utf-8')
   if p=='/health':return self.reply({'ok':True,'service':'geoid-server'})
@@ -209,6 +231,7 @@ class Handler(BaseHTTPRequestHandler):
    return self.reply(path.read_bytes(),mime='application/zip')
   self.reply({'error':'Not found'},404)
  def do_POST(self):
+  if not self.authorize():return
   if self.path not in ('/run','/dem','/inspect'):return self.reply({'error':'Not found'},404)
   try:
    limit=400*1024*1024
@@ -337,10 +360,23 @@ def save_rows(path,rows):
 
 if __name__=='__main__':
  import argparse
- ap=argparse.ArgumentParser();ap.add_argument('--port',type=int,default=8765);ap.add_argument('--no-browser',action='store_true');args=ap.parse_args()
- server=ThreadingHTTPServer(('127.0.0.1',args.port),Handler)
- url=f'http://127.0.0.1:{args.port}/'
- print('Geoid Utility browser interface:',url,flush=True)
+ ap=argparse.ArgumentParser()
+ ap.add_argument('--port',type=int,default=8765)
+ ap.add_argument('--no-browser',action='store_true')
+ ap.add_argument('--network',action='store_true',help='Listen on the network with a temporary access token; trusted LAN/VPN only')
+ args=ap.parse_args()
+ host='0.0.0.0' if args.network else '127.0.0.1'
+ Handler.access_token=secrets.token_urlsafe(32) if args.network else None
+ server=ThreadingHTTPServer((host,args.port),Handler)
+ if args.network:
+  hostname=socket.gethostname()
+  url=f'http://{hostname}:{args.port}/?token={Handler.access_token}'
+  print('ElevDatum network mode (trusted LAN/VPN only; unencrypted HTTP).',flush=True)
+  print('Copy and paste this URL into your browser:',url,flush=True)
+  print('If the hostname cannot be resolved, use the server IP address with the same port and token.',flush=True)
+ else:
+  url=f'http://127.0.0.1:{args.port}/'
+  print('Geoid Utility browser interface:',url,flush=True)
  if not args.no_browser:threading.Timer(0.8,lambda:webbrowser.open(url)).start()
  try:server.serve_forever()
  except KeyboardInterrupt:server.server_close()
