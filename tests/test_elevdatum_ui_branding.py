@@ -20,9 +20,10 @@ class ElevDatumBrandingTests(unittest.TestCase):
     def test_windows_installer_keeps_published_release_and_one_browser_open(self):
         installer = (ROOT / "INSTALL_WINDOWS_AUTO.ps1").read_text(encoding="utf-8")
         self.assertIn('$release = "v5.0.0"', installer)
-        self.assertIn('geoid_web.py --no-browser', installer)
-        self.assertIn('Research software[^<]*?v', installer)
-        self.assertIn("v5.0.0</div>", installer)
+        self.assertIn('"$pythonExe" geoid_web.py', installer)
+        self.assertIn('elevdatum_update.py', installer)
+        self.assertIn('refs/heads/main.zip', installer)
+        self.assertNotIn('geoid_web.py --no-browser', installer)
 
 
 if __name__ == "__main__":

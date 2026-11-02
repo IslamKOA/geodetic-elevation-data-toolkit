@@ -67,7 +67,7 @@ Close ElevDatum, then run **the same PowerShell command**:
 irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex
 ```
 
-This reuses a healthy `geoid_tool` environment and refreshes the installer-generated launcher and shortcut without intentionally deleting user data. **Important:** The current installer uses the published scientific release **v5.0.0**; rerunning it **does not download newer scientific application code**. New scientific versions need a published release and a corresponding installer update.
+This reuses a healthy `geoid_tool` environment and **refreshes all ElevDatum-managed application files** from the latest GitHub `main` branch, including Python files, notebooks, interface and assets. Additional user-created files are kept. **The updated code is a development snapshot, not the separately published/citable v5.0.0 release.** Back up custom modifications to distributed source files before refreshing.
 
 For advanced users: [Manual Windows installation](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md) · [Micromamba instructions](INSTALL_WINDOWS_MICROMAMBA.md) · [Windows installer source](INSTALL_WINDOWS_AUTO.ps1).
 
@@ -80,7 +80,7 @@ curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-tool
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs **ElevDatum v5.0.0** and starts the local application at **http://127.0.0.1:8765/**.
+The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and starts the local application at **http://127.0.0.1:8765/**.
 
 **To open ElevDatum later:** On Linux desktops, use the **ElevDatum** application-menu entry or Desktop shortcut (if created). On macOS or headless systems, activate `geoid_tool` and run `python ~/.local/share/ElevDatum/v5.0.0/geoid_web.py`. Keep the server running while using the browser.
 
@@ -88,7 +88,7 @@ The installer sets up Python and the required packages, installing Micromamba if
 
 Close ElevDatum and run **the same two Terminal commands** above. They re-download the installer and reuse a healthy environment and the existing installation.
 
-**Important:** Like the Windows installer, this refreshes the setup but **does not upgrade the scientific application code beyond v5.0.0**. A newer scientific version requires a published release and an updated installer.
+**Like Windows, this refreshes all ElevDatum-managed files from GitHub `main`**, including Python files, notebooks and interface, while preserving additional user-created files. The refreshed code is a **development snapshot**, separate from the published, immutable v5.0.0 DOI release. Back up local edits to distributed files.
 
 If `curl` is unavailable, use `wget` instead. Linux graphical shortcuts may require **Allow Launching**. For advanced setup options, see [the installer script](INSTALL_LINUX_MAC_AUTO.sh) and [manual installation instructions](#installation-and-launch).
 
