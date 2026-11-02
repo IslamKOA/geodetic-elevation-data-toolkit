@@ -146,58 +146,26 @@ try {
 }
 Write-Host "ElevDatum Python dependencies verified." -ForegroundColor Green
 
-# Keep the original, published v5.0.0 software source pinned for reproducibility.
-# A Git installation is never required: PowerShell downloads the source ZIP itself.
-if (-not (Test-Path -LiteralPath $entry -PathType Leaf)) {
-  if (Test-Path -LiteralPath $folder) {
-    throw "Installation folder exists but is incomplete: $folder. Nothing was deleted; inspect this folder before retrying."
-  }
-  $temp = Join-Path $base ("download-" + [Guid]::NewGuid().ToString("N"))
-  New-Item -ItemType Directory -Path $temp | Out-Null
-  try {
-    $archive = Join-Path $temp "source.zip"
-    Invoke-WebRequest -Uri "https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/tags/$release.zip" -OutFile $archive -UseBasicParsing -ErrorAction Stop
-    Expand-Archive -LiteralPath $archive -DestinationPath (Join-Path $temp "extracted")
-    $source = Get-ChildItem -LiteralPath (Join-Path $temp "extracted") -Directory |
-      Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName "geoid_web.py") } |
-      Select-Object -First 1
-    if (-not $source) { throw "Downloaded source ZIP is missing geoid_web.py." }
-    Move-Item -LiteralPath $source.FullName -Destination $folder
-  } finally {
-    Remove-Item -LiteralPath $temp -Recurse -Force -ErrorAction SilentlyContinue
-  }
+# Each run refreshes ALL managed source files from main (development snapshot).
+# The immutable v5.0.0 release remains available separately for reproducibility.
+# Stop the ElevDatum server before refreshing; do not touch other environments.
+$portInUse = Get-NetTCPConnection -LocalPort 8765 -State Listen -ErrorAction SilentlyContinue
+if ($portInUse) { throw "Port 8765 is in use. Close ElevDatum before updating." }
+$temp = Join-Path $base ("update-" + [Guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Path $temp | Out-Null
+try {
+  $archive = Join-Path $temp "main.zip"
+  $updater = Join-Path $temp "elevdatum_update.py"
+  Invoke-WebRequest -Uri "https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip" -OutFile $archive -UseBasicParsing
+  Invoke-WebRequest -Uri "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/elevdatum_update.py" -OutFile $updater -UseBasicParsing
+  & $pythonExe $updater --archive $archive --target $folder --source "main development snapshot"
+  if ($LASTEXITCODE -ne 0) { throw "ElevDatum source update failed. Previous files were restored where possible." }
+} finally {
+  Remove-Item -LiteralPath $temp -Recurse -Force -ErrorAction SilentlyContinue
 }
-Write-Host "ElevDatum scientific source: $folder" -ForegroundColor Green
+Write-Host "ElevDatum application source refreshed from GitHub main (development snapshot)." -ForegroundColor Green
 
-# Refresh presentation-only ElevDatum branding on the pinned scientific release.
-# Does not update the v5.0.0 calculation code, release archive, or DOI.
-$uiFile = Join-Path $folder "geoid_interface.html"
-if (-not (Test-Path -LiteralPath $uiFile -PathType Leaf)) { throw "ElevDatum interface missing: $uiFile" }
-$originalHtml = [System.IO.File]::ReadAllText($uiFile, [System.Text.Encoding]::UTF8)
-$updatedHtml = $originalHtml.Replace(
-  '<title>Geodetic & Elevation Data Toolkit</title>',
-  '<title>ElevDatum | Geodetic & Elevation Data Toolkit</title>'
-).Replace(
-  '<h1>Geodetic &amp; Elevation Data Toolkit</h1>',
-  '<h1>ElevDatum</h1>'
-)
-$updatedHtml = [regex]::Replace(
-  $updatedHtml,
-  '(<div class="eyebrow">Research software[^<]*?v)2\.4(</div>)',
-  '${1}5.0.0${2}'
-)
-if (-not $updatedHtml.Contains('<h1>ElevDatum</h1>') -or
-    -not $updatedHtml.Contains('<title>ElevDatum | Geodetic & Elevation Data Toolkit</title>') -or
-    -not $updatedHtml.Contains('v5.0.0</div>')) {
-  throw "The installed HTML was not recognized; refusing to apply an incomplete interface branding patch."
-}
-if ($updatedHtml -cne $originalHtml) {
-  [System.IO.File]::WriteAllText(
-    $uiFile, $updatedHtml, [System.Text.UTF8Encoding]::new($false)
-  )
-  Write-Host "ElevDatum interface branding refreshed (scientific release v5.0.0)." -ForegroundColor Green
-}
-
+# The source archive already contains the current user interface and branding.
 
 $waitScript = Join-Path $base "Open Toolkit When Ready.ps1"
 $waitContent = @'
