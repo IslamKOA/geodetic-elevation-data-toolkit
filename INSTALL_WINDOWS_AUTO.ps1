@@ -126,6 +126,11 @@ if ($prefixes.Count -ne 1) { throw "Expected exactly one $envName environment fo
 $envPrefix = [string]$prefixes[0]
 $pythonExe = Join-Path $envPrefix "python.exe"
 if (-not (Test-Path -LiteralPath $pythonExe -PathType Leaf)) { throw "The managed Python executable is missing: $pythonExe" }
+# Configure GDAL/PROJ before dependency imports (also used by child processes).
+$gdalShare = Join-Path $envPrefix "Library\share\gdal"
+$projShare = Join-Path $envPrefix "Library\share\proj"
+if (Test-Path -LiteralPath (Join-Path $gdalShare "gdalvrt.xsd") -PathType Leaf) { $env:GDAL_DATA = $gdalShare }
+if (Test-Path -LiteralPath (Join-Path $projShare "proj.db") -PathType Leaf) { $env:PROJ_DATA = $projShare }
 $checkScript = Join-Path $base ("elevdatum-python-check-" + [Guid]::NewGuid().ToString("N") + ".py")
 @'
 import sys
@@ -217,7 +222,6 @@ try {
   $iconUpdater = Join-Path $base "SET_ELEVDATUM_ICON.ps1"
   $iconDownloaded = $false
   foreach ($url in @(
-      "https://raw.githubusercontent.com/IslamKOA/elevdatum/main/SET_ELEVDATUM_ICON.ps1",
       "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/SET_ELEVDATUM_ICON.ps1")) {
     try {
       Invoke-WebRequest -Uri $url -OutFile $iconUpdater -UseBasicParsing -ErrorAction Stop
