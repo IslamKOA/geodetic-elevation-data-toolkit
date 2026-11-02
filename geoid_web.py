@@ -203,7 +203,7 @@ class Handler(BaseHTTPRequestHandler):
    supplied=cookies.get('elevdatum_session')
    if supplied and hmac.compare_digest(supplied.value,token):return True
   except Exception:pass
-  body=b'''<!doctype html><html lang="en"><meta charset="utf-8"><title>ElevDatum - Access required</title><body style="font:16px system-ui;max-width:660px;margin:12vh auto;padding:24px"><h2>ElevDatum — access token required</h2><p>ElevDatum is running. Open the <strong>complete URL including ?token=...</strong> printed in the Linux terminal.</p><p>For remote Linux installations use <code>elevdatum --network --no-browser</code> and copy the URL beginning with <code>http://ige-calcul4:8765/?token=</code>.</p><p>The bare address <code>http://127.0.0.1:8765/</code> is not sufficient in network mode.</p></body></html>'''
+  body='''<!doctype html><html lang="en"><meta charset="utf-8"><title>ElevDatum - Access required</title><body style="font:16px system-ui;max-width:660px;margin:12vh auto;padding:24px"><h2>ElevDatum — access token required</h2><p>ElevDatum is running. Open the <strong>complete URL including ?token=...</strong> printed in the Linux terminal.</p><p>For remote Linux installations use <code>elevdatum --network --no-browser</code> and copy the URL beginning with <code>http://ige-calcul4:8765/?token=</code>.</p><p>The bare address <code>http://127.0.0.1:8765/</code> is not sufficient in network mode.</p></body></html>'''.encode('utf-8')
   self.reply(body,401,mime='text/html; charset=utf-8')
   return False
  def reply(self,data,status=200,mime='application/json'):
