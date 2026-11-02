@@ -41,8 +41,6 @@ The toolkit connects **a chosen area, an existing DEM, survey coordinates, or a 
 
 The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevation-raster and point/CSV processing**. Online file-size, pixel-count and model restrictions apply, and **DEM acquisition, EGM96/EGM2008 and custom-grid processing remain available through the local installation rather than this hosted preview**. The **local version provides the full set of processing workflows** described below, subject to external service, model-grid and data availability.
 
-**[Download stable v5.0.0 source ZIP](https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/tags/v5.0.0.zip)** · [Automatic Windows setup](INSTALL_WINDOWS_AUTO.ps1) · [Manual installation](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md) · [Browse source](https://github.com/IslamKOA/geodetic-elevation-data-toolkit) · [Changelog](CHANGELOG.md)
-
 > **Availability:** This repository and the v5.0.0 source release are public. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
 
 ## Install and update ElevDatum
