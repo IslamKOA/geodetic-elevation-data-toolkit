@@ -167,26 +167,6 @@ Write-Host "ElevDatum application source refreshed from GitHub main (development
 
 # The source archive already contains the current user interface and branding.
 
-$waitScript = Join-Path $base "Open Toolkit When Ready.ps1"
-$waitContent = @'
-$deadline = (Get-Date).AddSeconds(120)
-while ((Get-Date) -lt $deadline) {
-  try {
-    $client = New-Object System.Net.Sockets.TcpClient
-    $result = $client.BeginConnect("127.0.0.1",8765,$null,$null)
-    if ($result.AsyncWaitHandle.WaitOne(500)) {
-      $client.EndConnect($result)
-      $client.Close()
-      Start-Process "http://127.0.0.1:8765/"
-      exit 0
-    }
-    $client.Close()
-  } catch { }
-  Start-Sleep -Seconds 1
-}
-Write-Warning "Toolkit server did not start within two minutes. Check the server window."
-'@
-Set-Content -LiteralPath $waitScript -Value $waitContent -Encoding UTF8
 $launcher = Join-Path $base "Launch Geodetic Toolkit.cmd"
 $contents = @"
 @echo off
@@ -197,8 +177,11 @@ cd /d "$folder"
 set "PATH=$envPrefix\Library\bin;$envPrefix\Scripts;$envPrefix;%PATH%"
 set "CONDA_PREFIX=$envPrefix"
 echo Starting ElevDatum...
-start "" powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$waitScript"
-"$pythonExe" geoid_web.py --no-browser
+rem Launch browser using Python's webbrowser module rather than a hidden helper.
+if exist "$envPrefix\Library\share\gdal\gdalvrt.xsd" set "GDAL_DATA=$envPrefix\Library\share\gdal"
+if exist "$envPrefix\Library\share\proj\proj.db" set "PROJ_DATA=$envPrefix\Library\share\proj"
+echo If no browser opens, visit http://127.0.0.1:8765/
+"$pythonExe" geoid_web.py
 echo.
 echo Server stopped. Inspect any error above.
 pause
