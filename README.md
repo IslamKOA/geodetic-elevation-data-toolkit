@@ -85,7 +85,7 @@ curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-tool
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and starts the local application at **http://127.0.0.1:8765/**.
+The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and creates the `elevdatum` terminal command. **The installer finishes and returns to the terminal; it does not start the web server.**
 
 **How to open ElevDatum on Linux or macOS (after installation):**
 
@@ -98,7 +98,7 @@ elevdatum
 
 If the command is not found, use `~/.local/bin/elevdatum`. The installer creates this launcher without requiring manual Conda activation. If necessary, add `~/.local/bin` to your shell's `PATH`.
 
-**After launching:** Keep the terminal/server running. Your default browser should open automatically on graphical systems. **If it does not**, open a browser and paste **http://127.0.0.1:8765/** into its address bar. The URL works only on the same computer while the server is running. On headless or SSH systems, a browser on another computer needs a suitable SSH port forward; the local URL alone will not connect remotely.
+**After running `elevdatum`:** The terminal displays **http://127.0.0.1:8765/** and stays open while the local server is active. This is normal and is separate from installation. Keep the terminal/server running. Your default browser should open automatically on graphical systems. **If it does not**, open a browser and paste **http://127.0.0.1:8765/** into its address bar. The URL works only on the same computer while the server is running. On headless or SSH systems, a browser on another computer needs a suitable SSH port forward; the local URL alone will not connect remotely.
 
 **Using ElevDatum on a remote Linux server (SSH):** Run `~/.local/bin/elevdatum --no-browser` on the server. On your Windows computer, open a separate PowerShell window and run `ssh -N -L 8765:127.0.0.1:8765 koai@ige-calcul4.u-ga.fr` (replace the SSH hostname/user for your own server). Then open **http://127.0.0.1:8765/** in your Windows browser. Keep both the server process and SSH tunnel running. Never expose the ElevDatum processing server directly to the public internet.
 
@@ -111,7 +111,7 @@ curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-tool
 bash INSTALL_LINUX_MAC_AUTO.sh
 ```
 
-These are the same commands used for installation. They download the latest installer, refresh the application files, and reuse a healthy existing environment.
+These are the same commands used for installation. They download the latest installer, refresh the application files, and reuse a healthy existing environment. **After updating, the installer exits without launching ElevDatum.** Type `elevdatum` when you want to open it.
 
 **Like Windows, this refreshes all ElevDatum-managed files from GitHub `main`**, including Python files, notebooks and interface, while preserving additional user-created files. The refreshed code is a **development snapshot**, separate from the published, immutable v5.0.0 DOI release. Back up local edits to distributed files.
 
