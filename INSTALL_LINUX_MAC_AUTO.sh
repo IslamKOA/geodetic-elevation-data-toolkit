@@ -111,7 +111,7 @@ else
   say "Reusing existing $ENV_NAME environment without changing dependencies."
 fi
 
-python_path="$("$python_path" -c 'import sys; print(sys.executable)' 2>/dev/null | tail -n 1)" || fail "Unable to locate geoid_tool Python."
+python_path="$("$selected" run -n "$ENV_NAME" python -c 'import sys; print(sys.executable)' 2>/dev/null | tail -n 1)" || fail "Unable to locate geoid_tool Python."
 [[ -x "$python_path" ]] || fail "geoid_tool Python executable not found: $python_path"
 say "Using environment Python: $python_path"
 
