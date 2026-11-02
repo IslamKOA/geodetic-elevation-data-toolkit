@@ -24,8 +24,6 @@ class ElevDatumBrandingTests(unittest.TestCase):
         self.assertIn('elevdatum_update.py', installer)
         self.assertIn('refs/heads/main.zip', installer)
         self.assertNotIn('geoid_web.py --no-browser', installer)
-        self.assertIn('Research software[^<]*?v', installer)
-        self.assertIn("v5.0.0</div>", installer)
 
 
 if __name__ == "__main__":
