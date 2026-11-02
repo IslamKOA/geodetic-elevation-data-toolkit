@@ -86,7 +86,14 @@ The installer sets up Python and the required packages, installing Micromamba if
 
 ### Linux and macOS — Update or repair
 
-Close ElevDatum and run **the same two Terminal commands** above. They re-download the installer and reuse a healthy environment and the existing installation.
+Close ElevDatum, then open **Terminal** and run:
+
+```bash
+curl -fL https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_LINUX_MAC_AUTO.sh -o INSTALL_LINUX_MAC_AUTO.sh
+bash INSTALL_LINUX_MAC_AUTO.sh
+```
+
+These are the same commands used for installation. They download the latest installer, refresh the application files, and reuse a healthy existing environment.
 
 **Like Windows, this refreshes all ElevDatum-managed files from GitHub `main`**, including Python files, notebooks and interface, while preserving additional user-created files. The refreshed code is a **development snapshot**, separate from the published, immutable v5.0.0 DOI release. Back up local edits to distributed files.
 
