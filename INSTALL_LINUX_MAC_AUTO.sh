@@ -117,6 +117,10 @@ else
   say "Reusing existing $ENV_NAME environment without changing dependencies."
 fi
 
+# Re-read the environment list after creation so fresh installations are found.
+if [[ "$selected_type" == "conda" ]]; then export CONDA_NO_PLUGINS=true; fi
+listing="$("$selected" env list --json 2>/dev/null)" || fail "Cannot inspect geoid_tool environment after setup."
+
 # Find the environment interpreter without invoking 'conda run' or its solver plugins.
 python_path=""
 while IFS= read -r candidate; do
