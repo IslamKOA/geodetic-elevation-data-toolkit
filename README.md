@@ -45,55 +45,31 @@ The hosted preview provides GPS Time and bounded **RAF20 AOI/geoid-grid, elevati
 
 > **Availability:** This repository and the v5.0.0 source release are public. The separately hosted website is a limited preview. Dataset and image redistribution remains subject to the original rights holders' terms; see [NOTICE.md](NOTICE.md).
 
-## Installation, shortcut refresh, and updates
+## Install and update ElevDatum
 
-**Scientific version vs. installer updates:** The automated installers deliberately download the **published, immutable v5.0.0** scientific source. Rerunning an installer refreshes the environment check, Windows launcher/ED shortcut icon and setup scripts, **not the scientific application code** already installed. A future scientific version requires a separately published release and an updated install target. This distinction preserves reproducibility and the existing DOI citation.
+### Windows — Install
 
-**Before a refresh:** Close the ElevDatum browser/server window. Keep any processed data and custom configuration backed up outside the installation folder. The normal installer reuses working environments and never intentionally deletes existing user data. If an existing environment is broken, it reports the failure rather than silently reinstalling packages.
-
-### Install locally (Windows)
-
-**Option A — Fully automatic Windows installation (recommended for all users)**
-
-Open **Windows PowerShell** and run this single command (requires internet access). It downloads and executes the current installer from GitHub; you can [review the script](INSTALL_WINDOWS_AUTO.ps1) beforehand. The command is the same for first installation and refreshing an existing setup:
+Open **PowerShell** and run:
 
 ```powershell
 irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex
 ```
 
-The installer works on **fresh Windows 10/11 computers without Git, Python, Anaconda, Conda, Mamba or Micromamba**. It first searches for a working existing environment manager, including common directories outside `PATH`. If none is available, it **downloads the official standalone Micromamba automatically** into your user account, then creates an isolated `geoid_tool` environment with Python 3.12 and the required geospatial libraries. It downloads the **published v5.0.0 source ZIP** into `%LOCALAPPDATA%\\GeodeticElevationToolkit` and creates the desktop shortcut with the ED icon. A healthy existing environment and user project data are preserved; no global Python installation, GitHub account, or Git checkout is required. First-time installation needs 64-bit Windows, internet access, and permission to write to your Windows user profile. On a broken existing environment, the installer stops with an error rather than modifying it automatically.
+The installer automatically sets up Python and the required packages. If you do not have Conda or Micromamba, it installs Micromamba for you. It creates an **ElevDatum** Desktop shortcut.
 
-**Two browser tabs or outdated interface label?** The Windows installer refreshes the desktop launcher so that **only one browser tab** opens when the server starts. The current GitHub source displays the **ElevDatum** title and **`Research software · v5.0.0`**. For installs from the immutable v5.0.0 scientific archive, the installer applies the same display-only correction to its copied HTML interface. Close the running server, then rerun the same one-line installer to apply these display/launcher fixes to an existing installation. This is a presentation-only correction; the immutable v5.0.0 scientific code and original DOI citation are unchanged.
+**To open ElevDatum:** Double-click the Desktop shortcut. Your browser should open at **http://127.0.0.1:8765/**. Keep the server terminal open while using the application. If the browser does not open, enter that address manually.
 
-**Already installed but the Desktop shortcut says `'conda' is not recognized`?** Re-run the same one-line installer in PowerShell to repair the shortcut. The updated launcher uses the full Python path inside `geoid_tool`, so it no longer needs the `conda` command in the Desktop terminal. Existing software files and working environments are preserved.
+### Windows — Update or repair
 
-**How to open the toolkit after automatic installation:**
-
-1. When installation finishes, the toolkit is launched automatically. Wait for the local server to start; your default browser should open **http://127.0.0.1:8765/**.
-2. **For every later use:** find the **ElevDatum** shortcut on your **Windows Desktop** and **double-click it**. You do not need to open PowerShell, activate Conda/Micromamba, or navigate to the source folder.
-3. Keep the server/terminal window open while working in the browser. Closing it stops the local processing server.
-4. If the browser does not open automatically, wait until the server starts, then manually visit **http://127.0.0.1:8765/**. If it still fails, read the error in the server window.
-
-**Official ElevDatum desktop shortcut:** The installer creates **ElevDatum.lnk** (displayed as **ElevDatum** on Windows) with the ED globe/terrain icon. If an old **Geodetic Elevation Toolkit** shortcut exists and no ElevDatum shortcut exists yet, the installer migrates the old name automatically. This renames or refreshes the Desktop shortcut without changing Python, Micromamba/Conda environments, scientific code, existing outputs, or geodetic calculations. **To rename an existing desktop shortcut without rerunning the installer**, run:
+Close ElevDatum, then run **the same PowerShell command**:
 
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/SET_ELEVDATUM_ICON.ps1" -OutFile "$HOME\Downloads\SET_ELEVDATUM_ICON.ps1"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\Downloads\SET_ELEVDATUM_ICON.ps1"
+irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/INSTALL_WINDOWS_AUTO.ps1 | iex
 ```
 
-The helper works with either the old **Geodetic Elevation Toolkit** or new **ElevDatum** Desktop shortcut. It renames the legacy shortcut to **ElevDatum** if the new name does not exist, without reinstalling the toolkit or changing the launcher target. The local workspace and installation directory stay unchanged. The artwork is also linked at the top of this README. The stable v5.0.0 archive itself is immutable; its original source release was not republished with this branding.
+This reuses a healthy `geoid_tool` environment and refreshes the installer-generated launcher and shortcut without intentionally deleting user data. **Important:** The current installer uses the published scientific release **v5.0.0**; rerunning it **does not download newer scientific application code**. New scientific versions need a published release and a corresponding installer update.
 
-The automatic installer also keeps the existing launcher at `%LOCALAPPDATA%\GeodeticElevationToolkit\Launch Geodetic Toolkit.cmd`; the launcher filename and installation path deliberately remain unchanged for backwards compatibility.
-
-**No Conda or Micromamba installed?** Run the **same automatic command** above. Micromamba and Python are installed as needed, with no separate manual setup. The [Micromamba guide](INSTALL_WINDOWS_MICROMAMBA.md) is optional for advanced users who prefer managing environments themselves.
-
-**Option B — Manual setup (optional)**
-
-For users who prefer not to execute a downloaded installer script, see [Windows installation with Conda or Micromamba](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md). Both managers support the toolkit; choose whichever is already installed. The steps include protection against user-profile NumPy/SciPy conflicts.
-
-The full local application starts at **http://127.0.0.1:8765/**. Keep the server terminal open while using it. The HTML file alone does not perform scientific processing.
-
-For Linux/macOS, use the [automatic installation](#automatic-linux-and-macos-installation) below. Manual setup remains available under [Installation and launch](#installation-and-launch).
+For advanced users: [Manual Windows installation](INSTALL_WINDOWS_CONDA_OR_MICROMAMBA.md) · [Micromamba instructions](INSTALL_WINDOWS_MICROMAMBA.md) · [Windows installer source](INSTALL_WINDOWS_AUTO.ps1).
 
 ### Automatic Linux and macOS installation
 
