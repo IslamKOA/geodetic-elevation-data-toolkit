@@ -101,6 +101,7 @@ if [[ -z "$selected" ]]; then
   "$selected" --version || fail "Downloaded Micromamba cannot run."
 fi
 say "Using $selected_type: $selected"
+# The managed Python executable is resolved once after environment setup.
 listing="$("$selected" env list --json)" || fail "Unable to inspect managed environments."
 if ! printf '%s' "$listing" | grep -Fq "/$ENV_NAME\""; then
   say "Creating isolated Python 3.12 geospatial environment ($ENV_NAME)."
@@ -109,6 +110,10 @@ if ! printf '%s' "$listing" | grep -Fq "/$ENV_NAME\""; then
 else
   say "Reusing existing $ENV_NAME environment without changing dependencies."
 fi
+
+python_path="$("$python_path" -c 'import sys; print(sys.executable)' 2>/dev/null | tail -n 1)" || fail "Unable to locate geoid_tool Python."
+[[ -x "$python_path" ]] || fail "geoid_tool Python executable not found: $python_path"
+say "Using environment Python: $python_path"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -121,12 +126,12 @@ print("ElevDatum Python:", sys.executable)
 print("NumPy:", numpy.__version__, numpy.__file__)
 print("SciPy:", scipy.__version__, scipy.__file__)
 PY
-"$selected" run -n "$ENV_NAME" python "$tmp/verify.py" \
+"$python_path" "$tmp/verify.py" \
   || fail "Python dependency check failed. Existing environments have not been modified."
 
 # Every install/update refreshes source files from main (development snapshot).
 # Preserve extra user files and reuse the environment. Close the server first.
-if "$selected" run -n "$ENV_NAME" python -c 'import socket; s=socket.socket(); exit(0 if s.connect_ex(("127.0.0.1", 8765)) else 1)' ; then
+if "$python_path" -c 'import socket; s=socket.socket(); exit(0 if s.connect_ex(("127.0.0.1", 8765)) else 1)' ; then
   :
 else
   fail "Port 8765 is in use. Close ElevDatum before updating."
@@ -134,7 +139,7 @@ fi
 say "Downloading current ElevDatum application files."
 download "https://github.com/IslamKOA/geodetic-elevation-data-toolkit/archive/refs/heads/main.zip" "$tmp/source.zip"
 download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/elevdatum_update.py" "$tmp/elevdatum_update.py"
-"$selected" run -n "$ENV_NAME" python "$tmp/elevdatum_update.py" \
+"$python_path" "$tmp/elevdatum_update.py" \
   --archive "$tmp/source.zip" --target "$FOLDER" --source "main development snapshot" \
   || fail "Failed to refresh source files; previous files restored where possible."
 
@@ -142,15 +147,16 @@ download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-too
 bin_dir="$HOME/.local/bin"
 mkdir -p "$bin_dir"
 launcher="$bin_dir/elevdatum"
-printf -v manager_q '%q' "$selected"
-printf -v env_q '%q' "$ENV_NAME"
+printf -v python_q '%q' "$python_path"
+
 printf -v entry_q '%q' "$ENTRY"
-printf -v root_q '%q' "$MAMBA_ROOT_PREFIX"
+
 cat > "$launcher" <<EOF
 #!/usr/bin/env bash
 set -e
-export MAMBA_ROOT_PREFIX=$root_q
-exec $manager_q run -n $env_q python $entry_q "\$@"
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH
+exec $python_q $entry_q "\$@"
 EOF
 chmod 755 "$launcher"
 say "Terminal command installed: $launcher"
@@ -207,5 +213,5 @@ say "Opening: http://127.0.0.1:8765/"
 say "Later launch: $launcher (or simply elevdatum if ~/.local/bin is in PATH)"
 cd "$FOLDER"
 if [[ "${ELEVDATUM_NO_LAUNCH:-0}" != "1" ]]; then
-  "$selected" run -n "$ENV_NAME" python "$ENTRY"
+  "$launcher"
 fi
