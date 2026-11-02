@@ -90,9 +90,9 @@ The installer uses an existing Conda/Mamba installation or installs Micromamba i
 **Step 2 — Open ElevDatum (choose one):**
 
 - **On the Linux desktop or macOS computer:** Double-click the **ElevDatum** desktop/application-menu shortcut (Linux, when available), or type `elevdatum` in Terminal. The browser normally opens automatically; otherwise visit **http://127.0.0.1:8765/** on that same computer.
-- **On a remote Linux server, viewed from Windows (e.g., `ige-calcul4`):**
+- **On a remote Linux server, viewed from Windows (e.g., `a remote Linux server`):**
   1. **On Linux**, run `elevdatum --no-browser` and leave that terminal open.
-  2. **On Windows PowerShell**, run `ssh -N -L 8765:127.0.0.1:8765 koai@ige-calcul4.u-ga.fr` (substitute your SSH username/server), enter your password, and **leave PowerShell open**. No prompt after login is normal. Open **http://127.0.0.1:8765/** in the Windows browser. On later visits, the browser can open that same address automatically from a saved bookmark once the server and tunnel are running.
+  2. **On Windows PowerShell**, run `ssh -N -L 8765:127.0.0.1:8765 YOUR_USERNAME@YOUR_SERVER_HOSTNAME` (substitute your SSH username/server), enter your password, and **leave PowerShell open**. No prompt after login is normal. Open **http://127.0.0.1:8765/** in the Windows browser. On later visits, the browser can open that same address automatically from a saved bookmark once the server and tunnel are running.
 
 If `elevdatum` is not found, use `~/.local/bin/elevdatum`. The server must remain running while you use the interface; stop it with **Ctrl+C**. On Linux, some desktop shortcuts require **Allow Launching**. **Do not use `--network` for ordinary remote-server access:** SSH forwarding avoids direct exposure of ElevDatum's file-processing interface. Opening the browser URL alone does not start the server or tunnel.
 
