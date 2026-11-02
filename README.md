@@ -57,7 +57,14 @@ irm https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/m
 
 The installer automatically sets up Python and the required packages. If you do not have Conda or Micromamba, it installs Micromamba for you. It creates an **ElevDatum** Desktop shortcut.
 
-**To open ElevDatum:** Double-click the Desktop shortcut. Your browser should open at **http://127.0.0.1:8765/**. Keep the server terminal open while using the application. If the browser does not open, enter that address manually.
+**How to open ElevDatum on Windows (after installation):**
+
+1. Find the **ElevDatum** icon on your **Windows Desktop** and **double-click it**. You do not need to open PowerShell or activate Conda.
+2. A black terminal/server window starts. Your default web browser should automatically open the ElevDatum interface.
+3. **If the browser does not open**, open Edge, Chrome, or Firefox yourself and **copy and paste this address into the address bar:** **http://127.0.0.1:8765/** (or click the link while the server is running).
+4. **Keep the black terminal window open** while using ElevDatum. Closing it stops the local server.
+
+**Important:** The address is local to your computer; it works only while ElevDatum is running. Opening the link by itself does **not** start the software.
 
 ### Windows — Update or repair
 
@@ -82,13 +89,18 @@ bash INSTALL_LINUX_MAC_AUTO.sh
 
 The installer sets up Python and the required packages, installing Micromamba if needed. No existing Python or Conda installation is required. It installs the **latest GitHub main development snapshot** (distinct from the published v5.0.0 release) and starts the local application at **http://127.0.0.1:8765/**.
 
-**To open ElevDatum later (Linux/macOS):** Open a terminal and run:
+**How to open ElevDatum on Linux or macOS (after installation):**
+
+- **Linux graphical desktop:** Double-click the **ElevDatum** Desktop shortcut, if one was created, or find **ElevDatum** in the application menu. Some Linux desktops require right-click → **Allow Launching** before using the shortcut.
+- **Linux or macOS terminal (also works without a Desktop shortcut):** Open Terminal and run:
 
 ```bash
 elevdatum
 ```
 
-The installer creates this terminal command at `~/.local/bin/elevdatum`. If your shell does not find `elevdatum`, run `~/.local/bin/elevdatum` directly, or add `~/.local/bin` to your `PATH`. On Linux graphical desktops you can also use the **ElevDatum** application-menu entry or Desktop shortcut. Keep the terminal open while using the browser at **http://127.0.0.1:8765/**.
+If the command is not found, use `~/.local/bin/elevdatum`. The installer creates this launcher without requiring manual Conda activation. If necessary, add `~/.local/bin` to your shell's `PATH`.
+
+**After launching:** Keep the terminal/server running. Your default browser should open automatically on graphical systems. **If it does not**, open a browser and paste **http://127.0.0.1:8765/** into its address bar. The URL works only on the same computer while the server is running. On headless or SSH systems, a browser on another computer needs a suitable SSH port forward; the local URL alone will not connect remotely.
 
 ### Linux and macOS — Update or repair
 
