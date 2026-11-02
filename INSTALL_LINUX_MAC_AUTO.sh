@@ -138,6 +138,26 @@ download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-too
   --archive "$tmp/source.zip" --target "$FOLDER" --source "main development snapshot" \
   || fail "Failed to refresh source files; previous files restored where possible."
 
+# Install terminal command on Linux/macOS, including headless installations.
+bin_dir="$HOME/.local/bin"
+mkdir -p "$bin_dir"
+launcher="$bin_dir/elevdatum"
+printf -v manager_q '%q' "$selected"
+printf -v env_q '%q' "$ENV_NAME"
+printf -v entry_q '%q' "$ENTRY"
+printf -v root_q '%q' "$MAMBA_ROOT_PREFIX"
+cat > "$launcher" <<EOF
+#!/usr/bin/env bash
+set -e
+export MAMBA_ROOT_PREFIX=$root_q
+exec $manager_q run -n $env_q python $entry_q "\$@"
+EOF
+chmod 755 "$launcher"
+say "Terminal command installed: $launcher"
+if [[ ":$PATH:" != *":$bin_dir:"* ]]; then
+  say "Add ~/.local/bin to PATH or run: $launcher"
+fi
+
 # Optional Linux desktop integration. Skip on headless machines and macOS.
 if [[ "$(uname -s)" == "Linux" && ( -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ) ]]; then
   app_dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
@@ -149,18 +169,6 @@ if [[ "$(uname -s)" == "Linux" && ( -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-
     download "https://raw.githubusercontent.com/IslamKOA/geodetic-elevation-data-toolkit/main/assets/ElevDatum-ED-logo.jpg" "$icon_file" \
       || { rm -f "$icon_file"; say "Icon download failed; using a generic icon."; }
   fi
-  launcher="$bin_dir/elevdatum-launch"
-  printf -v manager_q '%q' "$selected"
-  printf -v env_q '%q' "$ENV_NAME"
-  printf -v entry_q '%q' "$ENTRY"
-  printf -v root_q '%q' "$MAMBA_ROOT_PREFIX"
-  cat > "$launcher" <<EOF
-#!/usr/bin/env bash
-set -e
-export MAMBA_ROOT_PREFIX=$root_q
-exec $manager_q run -n $env_q python $entry_q
-EOF
-  chmod 755 "$launcher"
   desktop_file="$app_dir/elevdatum.desktop"
   desktop_exec="${launcher//\\/\\\\}"
   desktop_exec="${desktop_exec//\"/\\\"}"
@@ -196,7 +204,7 @@ fi
 
 say "ElevDatum is installed at: $FOLDER"
 say "Opening: http://127.0.0.1:8765/"
-say "Later launch: $selected run -n $ENV_NAME python $ENTRY"
+say "Later launch: $launcher (or simply elevdatum if ~/.local/bin is in PATH)"
 cd "$FOLDER"
 if [[ "${ELEVDATUM_NO_LAUNCH:-0}" != "1" ]]; then
   "$selected" run -n "$ENV_NAME" python "$ENTRY"
